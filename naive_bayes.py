@@ -1,8 +1,6 @@
 import numpy as np
 from collections import Counter
 
-from sklearn.metrics import classification_report,confusion_matrix, accuracy_score
-
 class NaiveBayes_v0:
     """
     First implementation of Naive Bayes
@@ -81,25 +79,12 @@ class NaiveBayes_v1:
             res[r] = np.argmax(np.array(prob))
         return res
 
-def test(classifier, X_train, X_test, y_train, y_test):
 
-    classifier.fit(X_train.toarray(), y_train)
-    pred = classifier.predict(X_train.toarray())
-    print(classification_report(y_train ,pred))
-    print('Confusion Matrix: \n',confusion_matrix(y_train,pred))
-    print()
-    print('Accuracy: ', accuracy_score(y_train,pred))
-
-
-    pred = classifier.predict(X_test.toarray())
-    print(classification_report(y_test ,pred ))
-
-    print('Confusion Matrix: \n', confusion_matrix(y_test,pred))
-    print()
-    print('Accuracy: ', accuracy_score(y_test,pred))
-    return classifier
 
 if __name__ == '__main__':
+    from evaluation import test
+    from utils import load_data
+    
     import pandas as pd
     from sklearn.model_selection import train_test_split
     from sklearn.datasets import fetch_20newsgroups
@@ -109,14 +94,14 @@ if __name__ == '__main__':
 
 
 
-    df = pd.read_csv('emails.csv')
-    df.drop_duplicates(inplace = True)
-    messages_bow = CountVectorizer(stop_words='english').fit_transform(df['text'])
+    emails = load_data('emails.csv')
+    emails.drop_duplicates(inplace = True)
+    emails_bow = CountVectorizer(stop_words='english').fit_transform(emails['text'])
 
-    X_train, X_test, y_train, y_test = train_test_split(messages_bow, df['spam'], 
+    X_train, X_test, y_train, y_test = train_test_split(emails_bow, emails['spam'], 
                                                         test_size = 0.20, 
                                                         random_state = 0,
-                                                        stratify = df['spam'])
+                                                        stratify = emails['spam'])
 
     test(NaiveBayes_v1(), X_train, X_test, y_train, y_test)
 
