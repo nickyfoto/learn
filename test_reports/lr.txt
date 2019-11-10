@@ -1,270 +1,249 @@
+Start testing
 
-    example from
+    Generated data example from
     https://github.com/beckernick/logistic_regression_from_scratch/blob/master/logistic_regression_scratch.ipynb
     
-testing LogisticRegression(C=0, fit_intercept=True, learning_rate=0.1,
+mylearn LogisticRegression(C=0, fit_intercept=True, learning_rate=0.1,
                    num_iterations=300000, penalty=None, print_cost=False,
                    steps=10)
-Confusion Matrix: 
- [[3976   24]
- [  19 3981]]
-
-Training Accuracy:  0.994625
-Confusion Matrix: 
- [[997   3]
- [ 10 990]]
-
-Testing Accuracy:  0.9935
-================================================================================
-testing LogisticRegression(C=1.0, class_weight=None, dual=False, fit_intercept=True,
+sklearn LogisticRegression(C=1.0, class_weight=None, dual=False, fit_intercept=True,
                    intercept_scaling=1, l1_ratio=None, max_iter=100,
                    multi_class='warn', n_jobs=None, penalty='none',
                    random_state=None, solver='lbfgs', tol=0.0001, verbose=0,
                    warm_start=False)
-Confusion Matrix: 
+mylearn Confusion Matrix: 
  [[3976   24]
  [  19 3981]]
 
-Training Accuracy:  0.994625
-Confusion Matrix: 
- [[997   3]
- [ 10 990]]
+sklearn Confusion Matrix: 
+ [[3976   24]
+ [  19 3981]]
 
-Testing Accuracy:  0.9935
+mylearn Training Accuracy: 0.994625
+
+sklearn Training Accuracy: 0.994625
+
+
+comparing intercept_
+mylearn: [-14.18266851]
+sklearn: [-14.63223973]
+
+comparing coef_
+mylearn: [[-4.84672859  8.21517668]]
+sklearn: [[-4.99355613  8.4680955 ]]
+
 ================================================================================
-comparing weights difference:
-[-14.18266851] [[-4.84672859  8.21517668]]
-[-14.63223973] [[-4.99355613  8.4680955 ]]
-testing LogisticRegressionSGD(C=0, fit_intercept=True, learning_rate=0.01,
+mylearn LogisticRegressionSGD(C=0, fit_intercept=True, learning_rate=0.01,
                       num_iterations=500, penalty=None, print_cost=False)
-Confusion Matrix: 
+sklearn LogisticRegression(C=1.0, class_weight=None, dual=False, fit_intercept=True,
+                   intercept_scaling=1, l1_ratio=None, max_iter=100,
+                   multi_class='warn', n_jobs=None, penalty='none',
+                   random_state=None, solver='lbfgs', tol=0.0001, verbose=0,
+                   warm_start=False)
+mylearn Confusion Matrix: 
  [[3976   24]
  [  20 3980]]
 
-Training Accuracy:  0.9945
-Confusion Matrix: 
- [[998   2]
- [ 10 990]]
-
-Testing Accuracy:  0.994
-================================================================================
-testing LogisticRegression(C=1.0, class_weight=None, dual=False, fit_intercept=True,
-                   intercept_scaling=1, l1_ratio=None, max_iter=100,
-                   multi_class='warn', n_jobs=None, penalty='none',
-                   random_state=None, solver='lbfgs', tol=0.0001, verbose=0,
-                   warm_start=False)
-Confusion Matrix: 
+sklearn Confusion Matrix: 
  [[3976   24]
  [  19 3981]]
 
-Training Accuracy:  0.994625
-Confusion Matrix: 
- [[997   3]
- [ 10 990]]
+mylearn Training Accuracy: 0.9945
 
-Testing Accuracy:  0.9935
+sklearn Training Accuracy: 0.994625
+
+
+comparing intercept_
+mylearn: [-14.45567905]
+sklearn: [-14.63223973]
+
+comparing coef_
+mylearn: [[-4.94405277  8.33901583]]
+sklearn: [[-4.99355613  8.4680955 ]]
+
 ================================================================================
-comparing weights difference:
-[-14.45567905] [[-4.94405277  8.33901583]]
-[-14.63223973] [[-4.99355613  8.4680955 ]]
-testing LogisticRegression(C=3.3333333333333335, fit_intercept=True, learning_rate=0.1,
+mylearn LogisticRegression(C=3.3333333333333335, fit_intercept=True, learning_rate=0.1,
                    num_iterations=300000, penalty='l2', print_cost=False,
                    steps=10)
-Confusion Matrix: 
- [[3977   23]
- [  19 3981]]
-
-Training Accuracy:  0.99475
-Confusion Matrix: 
- [[997   3]
- [  9 991]]
-
-Testing Accuracy:  0.994
-================================================================================
-testing LogisticRegression(C=0.3, class_weight=None, dual=False, fit_intercept=True,
+sklearn LogisticRegression(C=0.3, class_weight=None, dual=False, fit_intercept=True,
                    intercept_scaling=1, l1_ratio=None, max_iter=100,
                    multi_class='warn', n_jobs=None, penalty='l2',
                    random_state=None, solver='lbfgs', tol=0.0001, verbose=0,
                    warm_start=False)
-Confusion Matrix: 
+mylearn Confusion Matrix: 
  [[3977   23]
  [  19 3981]]
 
-Training Accuracy:  0.99475
-Confusion Matrix: 
- [[997   3]
- [  9 991]]
+sklearn Confusion Matrix: 
+ [[3977   23]
+ [  19 3981]]
 
-Testing Accuracy:  0.994
+mylearn Training Accuracy: 0.99475
+
+sklearn Training Accuracy: 0.99475
+
+
+comparing intercept_
+mylearn: [-9.02026004]
+sklearn: [-9.02026122]
+
+comparing coef_
+mylearn: [[-2.88406556  5.18823839]]
+sklearn: [[-2.8840657  5.188239 ]]
+
 ================================================================================
-comparing weights difference:
-[-9.02026004] [[-2.88406556  5.18823839]]
-[-9.02026122] [[-2.8840657  5.188239 ]]
-testing LogisticRegressionSGD(C=3.3333333333333335, fit_intercept=True,
+mylearn LogisticRegressionSGD(C=3.3333333333333335, fit_intercept=True,
                       learning_rate=0.01, num_iterations=500, penalty='l2',
                       print_cost=False)
-Confusion Matrix: 
+sklearn LogisticRegression(C=0.3, class_weight=None, dual=False, fit_intercept=True,
+                   intercept_scaling=1, l1_ratio=None, max_iter=100,
+                   multi_class='warn', n_jobs=None, penalty='l2',
+                   random_state=None, solver='lbfgs', tol=0.0001, verbose=0,
+                   warm_start=False)
+mylearn Confusion Matrix: 
  [[3977   23]
  [  23 3977]]
 
-Training Accuracy:  0.99425
-Confusion Matrix: 
- [[997   3]
- [  9 991]]
-
-Testing Accuracy:  0.994
-================================================================================
-testing LogisticRegression(C=0.3, class_weight=None, dual=False, fit_intercept=True,
-                   intercept_scaling=1, l1_ratio=None, max_iter=100,
-                   multi_class='warn', n_jobs=None, penalty='l2',
-                   random_state=None, solver='lbfgs', tol=0.0001, verbose=0,
-                   warm_start=False)
-Confusion Matrix: 
+sklearn Confusion Matrix: 
  [[3977   23]
  [  19 3981]]
 
-Training Accuracy:  0.99475
-Confusion Matrix: 
- [[997   3]
- [  9 991]]
+mylearn Training Accuracy: 0.99425
 
-Testing Accuracy:  0.994
+sklearn Training Accuracy: 0.99475
+
+
+comparing intercept_
+mylearn: [-9.0555806]
+sklearn: [-9.02026122]
+
+comparing coef_
+mylearn: [[-2.90430589  5.14692423]]
+sklearn: [[-2.8840657  5.188239 ]]
+
 ================================================================================
-comparing weights difference:
-[-9.0555806] [[-2.90430589  5.14692423]]
-[-9.02026122] [[-2.8840657  5.188239 ]]
 
     load iris and combine label 1, 2 into 1
     only use the first two features of X
     
-testing LogisticRegression(C=0, fit_intercept=True, learning_rate=0.1,
+mylearn LogisticRegression(C=0, fit_intercept=True, learning_rate=0.1,
                    num_iterations=300000, penalty=None, print_cost=False,
                    steps=10)
-Confusion Matrix: 
- [[40  0]
- [ 0 80]]
-
-Training Accuracy:  1.0
-Confusion Matrix: 
- [[10  0]
- [ 0 20]]
-
-Testing Accuracy:  1.0
-================================================================================
-testing LogisticRegression(C=1.0, class_weight=None, dual=False, fit_intercept=True,
+sklearn LogisticRegression(C=1.0, class_weight=None, dual=False, fit_intercept=True,
                    intercept_scaling=1, l1_ratio=None, max_iter=100,
                    multi_class='warn', n_jobs=None, penalty='none',
                    random_state=None, solver='lbfgs', tol=0.0001, verbose=0,
                    warm_start=False)
-Confusion Matrix: 
+mylearn Confusion Matrix: 
  [[40  0]
  [ 0 80]]
 
-Training Accuracy:  1.0
-Confusion Matrix: 
- [[10  0]
- [ 0 20]]
+sklearn Confusion Matrix: 
+ [[40  0]
+ [ 0 80]]
 
-Testing Accuracy:  1.0
+mylearn Training Accuracy: 1.0
+
+sklearn Training Accuracy: 1.0
+
+
+comparing intercept_
+mylearn: [-26.26209792]
+sklearn: [-259.59146071]
+
+comparing coef_
+mylearn: [[ 12.54736436 -13.32376475]]
+sklearn: [[ 94.93677687 -78.07940563]]
+
 ================================================================================
-comparing weights difference:
-[-26.26209792] [[ 12.54736436 -13.32376475]]
-[-259.59146071] [[ 94.93677687 -78.07940563]]
-testing LogisticRegressionSGD(C=0, fit_intercept=True, learning_rate=0.01,
+mylearn LogisticRegressionSGD(C=0, fit_intercept=True, learning_rate=0.01,
                       num_iterations=500, penalty=None, print_cost=False)
-Confusion Matrix: 
+sklearn LogisticRegression(C=1.0, class_weight=None, dual=False, fit_intercept=True,
+                   intercept_scaling=1, l1_ratio=None, max_iter=100,
+                   multi_class='warn', n_jobs=None, penalty='none',
+                   random_state=None, solver='lbfgs', tol=0.0001, verbose=0,
+                   warm_start=False)
+mylearn Confusion Matrix: 
  [[39  1]
  [ 0 80]]
 
-Training Accuracy:  0.9916666666666667
-Confusion Matrix: 
- [[10  0]
- [ 0 20]]
-
-Testing Accuracy:  1.0
-================================================================================
-testing LogisticRegression(C=1.0, class_weight=None, dual=False, fit_intercept=True,
-                   intercept_scaling=1, l1_ratio=None, max_iter=100,
-                   multi_class='warn', n_jobs=None, penalty='none',
-                   random_state=None, solver='lbfgs', tol=0.0001, verbose=0,
-                   warm_start=False)
-Confusion Matrix: 
+sklearn Confusion Matrix: 
  [[40  0]
  [ 0 80]]
 
-Training Accuracy:  1.0
-Confusion Matrix: 
- [[10  0]
- [ 0 20]]
+mylearn Training Accuracy: 0.9916666666666667
 
-Testing Accuracy:  1.0
+sklearn Training Accuracy: 1.0
+
+
+comparing intercept_
+mylearn: [-2.12541922]
+sklearn: [-259.59146071]
+
+comparing coef_
+mylearn: [[ 5.07925838 -8.20235308]]
+sklearn: [[ 94.93677687 -78.07940563]]
+
 ================================================================================
-comparing weights difference:
-[-2.12541922] [[ 5.07925838 -8.20235308]]
-[-259.59146071] [[ 94.93677687 -78.07940563]]
-testing LogisticRegression(C=3.3333333333333335, fit_intercept=True, learning_rate=0.1,
+mylearn LogisticRegression(C=3.3333333333333335, fit_intercept=True, learning_rate=0.1,
                    num_iterations=300000, penalty='l2', print_cost=False,
                    steps=10)
-Confusion Matrix: 
- [[40  0]
- [ 0 80]]
-
-Training Accuracy:  1.0
-Confusion Matrix: 
- [[10  0]
- [ 0 20]]
-
-Testing Accuracy:  1.0
-================================================================================
-testing LogisticRegression(C=0.3, class_weight=None, dual=False, fit_intercept=True,
+sklearn LogisticRegression(C=0.3, class_weight=None, dual=False, fit_intercept=True,
                    intercept_scaling=1, l1_ratio=None, max_iter=100,
                    multi_class='warn', n_jobs=None, penalty='l2',
                    random_state=None, solver='lbfgs', tol=0.0001, verbose=0,
                    warm_start=False)
-Confusion Matrix: 
+mylearn Confusion Matrix: 
  [[40  0]
  [ 0 80]]
 
-Training Accuracy:  1.0
-Confusion Matrix: 
- [[10  0]
- [ 0 20]]
+sklearn Confusion Matrix: 
+ [[40  0]
+ [ 0 80]]
 
-Testing Accuracy:  1.0
+mylearn Training Accuracy: 1.0
+
+sklearn Training Accuracy: 1.0
+
+
+comparing intercept_
+mylearn: [-5.5569208]
+sklearn: [-5.55692049]
+
+comparing coef_
+mylearn: [[ 2.06883297 -1.75577685]]
+sklearn: [[ 2.06883293 -1.75577689]]
+
 ================================================================================
-comparing weights difference:
-[-5.5569208] [[ 2.06883297 -1.75577685]]
-[-5.55692049] [[ 2.06883293 -1.75577689]]
-testing LogisticRegressionSGD(C=3.3333333333333335, fit_intercept=True,
+mylearn LogisticRegressionSGD(C=3.3333333333333335, fit_intercept=True,
                       learning_rate=0.01, num_iterations=500, penalty='l2',
                       print_cost=False)
-Confusion Matrix: 
+sklearn LogisticRegression(C=0.3, class_weight=None, dual=False, fit_intercept=True,
+                   intercept_scaling=1, l1_ratio=None, max_iter=100,
+                   multi_class='warn', n_jobs=None, penalty='l2',
+                   random_state=None, solver='lbfgs', tol=0.0001, verbose=0,
+                   warm_start=False)
+mylearn Confusion Matrix: 
  [[39  1]
  [ 0 80]]
 
-Training Accuracy:  0.9916666666666667
-Confusion Matrix: 
- [[10  0]
- [ 0 20]]
-
-Testing Accuracy:  1.0
-================================================================================
-testing LogisticRegression(C=0.3, class_weight=None, dual=False, fit_intercept=True,
-                   intercept_scaling=1, l1_ratio=None, max_iter=100,
-                   multi_class='warn', n_jobs=None, penalty='l2',
-                   random_state=None, solver='lbfgs', tol=0.0001, verbose=0,
-                   warm_start=False)
-Confusion Matrix: 
+sklearn Confusion Matrix: 
  [[40  0]
  [ 0 80]]
 
-Training Accuracy:  1.0
-Confusion Matrix: 
- [[10  0]
- [ 0 20]]
+mylearn Training Accuracy: 0.9916666666666667
 
-Testing Accuracy:  1.0
+sklearn Training Accuracy: 1.0
+
+
+comparing intercept_
+mylearn: [-3.7137379]
+sklearn: [-5.55692049]
+
+comparing coef_
+mylearn: [[ 1.84864939 -1.96763295]]
+sklearn: [[ 2.06883293 -1.75577689]]
+
 ================================================================================
-comparing weights difference:
-[-3.7137379] [[ 1.84864939 -1.96763295]]
-[-5.55692049] [[ 2.06883293 -1.75577689]]
+End testing
+203.20502495765686
