@@ -3,14 +3,41 @@ import numpy as np
 import h5py
 from skimage import io, transform
 import matplotlib.pyplot as plt
+from sklearn import datasets
 
 def load_data(fn, path='./datasets/', sep=','):
     data = pd.read_csv(path + fn, sep=sep)
     return data
 
+def load_beckernick():
+    """
+    Generated data example from
+    https://github.com/beckernick/logistic_regression_from_scratch/blob/master/logistic_regression_scratch.ipynb
+    """
+    print(load_beckernick.__doc__)
+    np.random.seed(12)
+    num_observations = 5000
 
+    x1 = np.random.multivariate_normal([0, 0], [[1, .75],[.75, 1]], num_observations)
+    x2 = np.random.multivariate_normal([1, 4], [[1, .75],[.75, 1]], num_observations)
+
+    simulated_separableish_features = np.vstack((x1, x2)).astype(np.float32)
     
+    simulated_labels = np.hstack((np.zeros(num_observations),
+                                  np.ones(num_observations)))
+    return simulated_separableish_features, simulated_labels
     
+def load_iris_2D():
+    """
+    load iris and combine label 1, 2 into 1
+    only use the first two features of X
+    """
+    print(load_iris_2D.__doc__)
+    iris = datasets.load_iris()
+    X = iris.data[:, :2]
+    y = (iris.target != 0) * 1
+    return X, y
+
 def load_cat_dataset():
     train_dataset = h5py.File('datasets/train_catvnoncat.h5', "r")
     train_set_x_orig = np.array(train_dataset["train_set_x"][:]) # your train set features
@@ -25,14 +52,60 @@ def load_cat_dataset():
     train_set_y_orig = train_set_y_orig.reshape((1, train_set_y_orig.shape[0]))
     test_set_y_orig = test_set_y_orig.reshape((1, test_set_y_orig.shape[0]))
     
-    return train_set_x_orig, train_set_y_orig, test_set_x_orig, test_set_y_orig, classes
+    # return train_set_x_orig, train_set_y_orig, test_set_x_orig, test_set_y_orig, classes
+    # train_set_x_orig, train_set_y, test_set_x_orig, test_set_y, classes = load_cat_dataset()
+    
+    train_set_x_flatten = train_set_x_orig.reshape(train_set_x_orig.shape[0], -1).T
+    test_set_x_flatten = test_set_x_orig.reshape(test_set_x_orig.shape[0], -1).T
+    train_set_x = train_set_x_flatten/255.
+    test_set_x = test_set_x_flatten/255.
+    X_train = train_set_x.T
+    X_test = test_set_x.T
+    
+    y_train = train_set_y_orig.flatten()
+    y_test = test_set_y_orig.flatten()
 
-def predict_image(clf, fname, num_px, classes):
+    num_px = train_set_x_orig.shape[1]
+    return X_train, X_test, y_train, y_test, num_px, classes
+
+def predict_image(clf, fname, num_px, classes, plot_image=False):
     image_file = "images/" + fname
     image = io.imread(image_file) / 255.
     resized_image = transform.resize(image, output_shape=(num_px,num_px)).reshape((1, num_px*num_px*3))
     my_predicted_image = clf.predict(resized_image)
-
-    plt.imshow(image)
+    if plot_image: plt.imshow(image)
     print("y = " + str(np.squeeze(my_predicted_image)) + ", your algorithm predicts a \"" + 
           classes[int(np.squeeze(my_predicted_image)),].decode("utf-8") +  "\" picture.")
+
+
+
+
+def scatter_plot(X, y):
+    plt.figure(figsize=(10, 6))
+    plt.scatter(X[y == 0][:, 0], X[y == 0][:, 1], color='b', label='0')
+    plt.scatter(X[y == 1][:, 0], X[y == 1][:, 1], color='r', label='1')
+    plt.legend()
+    return plt
+
+def contour_plot(X, y, model):
+    scatter_plot(X, y)
+    x1_min, x1_max = X[:,0].min(), X[:,0].max(),
+    x2_min, x2_max = X[:,1].min(), X[:,1].max(),
+    xx1, xx2 = np.meshgrid(np.linspace(x1_min, x1_max), np.linspace(x2_min, x2_max))
+    grid = np.c_[xx1.ravel(), xx2.ravel()]
+    probs = model.predict_proba(grid)[:,0].reshape(xx1.shape)
+    plt.contour(xx1, xx2, probs, [0.5], linewidths=1, colors='black');
+
+
+def plot_boundary(clf, X, y, grid_step=.01, poly_featurizer=None):
+    x_min, x_max = X[:, 0].min() - .1, X[:, 0].max() + .1
+    y_min, y_max = X[:, 1].min() - .1, X[:, 1].max() + .1
+    xx, yy = np.meshgrid(np.arange(x_min, x_max, grid_step),
+                         np.arange(y_min, y_max, grid_step))
+
+
+    # to every point from [x_min, m_max]x[y_min, y_max]
+    # we put in correspondence its own color
+    Z = clf.predict(poly_featurizer.transform(np.c_[xx.ravel(), yy.ravel()]))
+    Z = Z.reshape(xx.shape)
+    plt.contour(xx, yy, Z, cmap=plt.cm.Paired)
