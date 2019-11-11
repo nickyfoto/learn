@@ -1,5 +1,8 @@
-from sklearn.metrics import classification_report,confusion_matrix, accuracy_score
 from scipy.sparse import issparse
+import numpy as np
+
+from sklearn.metrics import classification_report,confusion_matrix, accuracy_score
+from sklearn.metrics import mean_squared_error, r2_score
 
 class TestSK:
     """
@@ -23,31 +26,33 @@ class TestSK:
 
 
     def _print_results(self, clf_names, metric, description, preds):
+        metrics = []
         for i, name in enumerate(clf_names):
-            print(f"{name} {description}", metric(self.y_train, preds[i]))
-            print()
+            m = metric(self.y_train, preds[i])
+            print(f"{name} {description}", m)
+            metrics.append(m)
+        print('abs diff: ', np.abs(metrics[0] - metrics[1]))
+        print()
 
-    def compare_performance(self):
+    def compare_performance(self, metrics, descriptions):
         clf_names = ['mylearn', 'sklearn']
         
         for name, clf in zip(clf_names, [self.learn, self.sk]):
             print(name, clf)
-        
+        print()
         preds = [clf.predict(self.X_train) for clf in [self.learn_clf, self.sk_clf]]
-        
-        metrics = [confusion_matrix, accuracy_score]
-        descriptions = ["Confusion Matrix: \n", "Training Accuracy:"]
 
         for i, metric in enumerate(metrics):
             self._print_results(clf_names, metric, descriptions[i], preds)
 
 
     def compare_attributes(self, attributes):
-        
         for attribute in attributes:
             print('comparing', attribute)
-            print('mylearn:', getattr(self.learn_clf, attribute))
-            print('sklearn:', getattr(self.sk_clf, attribute))
+            m, s = getattr(self.learn_clf, attribute), getattr(self.sk_clf, attribute)
+            print('mylearn:\n', m)
+            print('sklearn:\n', s)
+            print('abs diff:\n', np.abs(m - s))
             print()
 
 def test(classifier, X_train, X_test, y_train, y_test,
