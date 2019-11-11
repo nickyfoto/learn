@@ -68,6 +68,9 @@ def load_cat_dataset():
     num_px = train_set_x_orig.shape[1]
     return X_train, X_test, y_train, y_test, num_px, classes
 
+
+
+
 def predict_image(clf, fname, num_px, classes, plot_image=False):
     image_file = "images/" + fname
     image = io.imread(image_file) / 255.
@@ -78,7 +81,14 @@ def predict_image(clf, fname, num_px, classes, plot_image=False):
           classes[int(np.squeeze(my_predicted_image)),].decode("utf-8") +  "\" picture.")
 
 
+# plots utils
 
+def costs_plot(clf):
+    plt.plot(clf.costs)
+    plt.ylabel('cost')
+    plt.xlabel('iterations (per hundreds)')
+    plt.title("Learning rate =" + str(clf.learning_rate))
+    plt.show()
 
 def scatter_plot(X, y):
     plt.figure(figsize=(10, 6))

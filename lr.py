@@ -31,8 +31,10 @@ class LogisticRegression(BaseEstimator):
         return np.concatenate((intercept, X), axis=1)
 
     def log_likelihood(self, preds, target):
-        ll = - (target * np.log(preds + np.finfo(float).eps) + 
-                (1 - target) * np.log(1 - preds + np.finfo(float).eps)).sum() / self.m
+        ll = - (np.dot(target,  np.log(preds + np.finfo(float).eps)) + 
+                np.dot((1 - target), np.log(1 - preds + np.finfo(float).eps))) / self.m
+        if self.penalty:
+            ll += self.C * np.square(self.weights[1:]).sum() / (2 * self.m)
         return ll
 
 
@@ -58,7 +60,7 @@ class LogisticRegression(BaseEstimator):
 
             if step % (self.num_iterations // self.steps) == 0:
                 cost = self.log_likelihood(preds = predictions, 
-                                                target = target, m=self.m)
+                                                target = target)
                 if self.print_cost: print(step, cost)
                 self.costs.append(cost)
         return self
@@ -200,8 +202,8 @@ if __name__ == '__main__':
     sgd_r = LogisticRegressionSGD(num_iterations=500, learning_rate =1e-2,
                                 print_cost=False, penalty='l2', C=0.3)
 
-
-
+    # test command
+    # python3 lr.py > test_reports/lr.txt
     start = time()
     print("Start testing")
 
