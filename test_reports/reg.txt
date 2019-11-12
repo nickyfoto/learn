@@ -1,0 +1,312 @@
+Start testing
+Testing Standardized boston dataset
+mylearn LinearRegression(fit_intercept=True)
+sklearn LinearRegression(copy_X=True, fit_intercept=True, n_jobs=None, normalize=False)
+
+mylearn r2: 0.7730135569264234
+sklearn r2: 0.7730135569264234
+abs diff:  0.0
+
+mylearn MSE: 19.326470203585725
+sklearn MSE: 19.326470203585725
+abs diff:  0.0
+
+
+comparing intercept_
+mylearn:
+ 38.09169492628158
+sklearn:
+ 38.09169492630284
+abs diff:
+ 2.1259438653942198e-11
+
+comparing coef_
+mylearn:
+ [-1.19443447e-01  4.47799511e-02  5.48526168e-03  2.34080361e+00
+ -1.61236043e+01  3.70870901e+00 -3.12108178e-03 -1.38639737e+00
+  2.44178327e-01 -1.09896366e-02 -1.04592119e+00  8.11010693e-03
+ -4.92792725e-01]
+sklearn:
+ [-1.19443447e-01  4.47799511e-02  5.48526168e-03  2.34080361e+00
+ -1.61236043e+01  3.70870901e+00 -3.12108178e-03 -1.38639737e+00
+  2.44178327e-01 -1.09896366e-02 -1.04592119e+00  8.11010693e-03
+ -4.92792725e-01]
+abs diff:
+ [3.05311332e-16 3.49026363e-15 9.08804282e-14 1.64579461e-12
+ 8.18189960e-12 1.49746882e-12 2.94035629e-16 2.93765012e-13
+ 2.56183963e-14 4.11649881e-15 3.77919918e-13 3.27862737e-16
+ 5.09592368e-14]
+
+================================================================================
+mylearn SGDRegressor(alpha=0, fit_intercept=True, learning_rate=0.001, max_iter=1000,
+             penalty=None)
+sklearn SGDRegressor(alpha=0.0001, average=False, early_stopping=False, epsilon=0.1,
+             eta0=0.01, fit_intercept=True, l1_ratio=0.15,
+             learning_rate='invscaling', loss='squared_loss', max_iter=1000,
+             n_iter_no_change=5, penalty='none', power_t=0.25, random_state=0,
+             shuffle=True, tol=0.001, validation_fraction=0.1, verbose=0,
+             warm_start=False)
+
+mylearn r2: 0.7726421021907074
+sklearn r2: 0.7721202914637463
+abs diff:  0.0005218107269611139
+
+mylearn MSE: 19.358097241679218
+sklearn MSE: 19.402526148225224
+abs diff:  0.044428906546006175
+
+
+comparing intercept_
+mylearn:
+ [22.49281505]
+sklearn:
+ [22.49220314]
+abs diff:
+ [0.0006119]
+
+comparing coef_
+mylearn:
+ [-1.05686102  1.0462348   0.0850843   0.66796487 -1.84293192  2.6399551
+ -0.0537677  -2.96442923  2.19562875 -1.85138099 -2.29534094  0.72322662
+ -3.5360284 ]
+sklearn:
+ [-0.96953099  0.93536734 -0.16875225  0.58687988 -1.66297918  2.64303083
+ -0.14529201 -2.84793979  1.56282568 -1.26717339 -2.19122215  0.72675805
+ -3.44122262]
+abs diff:
+ [0.08733003 0.11086746 0.25383655 0.08108499 0.17995273 0.00307574
+ 0.09152431 0.11648943 0.63280307 0.5842076  0.10411879 0.00353143
+ 0.09480578]
+
+================================================================================
+-- Epoch 1
+Norm: 4.61, NNZs: 13, Bias: 15.834488, T: 404, Avg. loss: 99.147958
+Total training time: 0.00 seconds.
+-- Epoch 2
+Norm: 5.16, NNZs: 13, Bias: 19.594320, T: 808, Avg. loss: 22.171466
+Total training time: 0.00 seconds.
+-- Epoch 3
+Norm: 5.40, NNZs: 13, Bias: 21.093354, T: 1212, Avg. loss: 13.002878
+Total training time: 0.00 seconds.
+-- Epoch 4
+Norm: 5.54, NNZs: 13, Bias: 21.776429, T: 1616, Avg. loss: 11.093793
+Total training time: 0.00 seconds.
+-- Epoch 5
+Norm: 5.64, NNZs: 13, Bias: 22.112173, T: 2020, Avg. loss: 10.560880
+Total training time: 0.00 seconds.
+-- Epoch 6
+Norm: 5.72, NNZs: 13, Bias: 22.285948, T: 2424, Avg. loss: 10.359866
+Total training time: 0.00 seconds.
+-- Epoch 7
+Norm: 5.78, NNZs: 13, Bias: 22.379458, T: 2828, Avg. loss: 10.257030
+Total training time: 0.00 seconds.
+-- Epoch 8
+Norm: 5.84, NNZs: 13, Bias: 22.431367, T: 3232, Avg. loss: 10.190660
+Total training time: 0.00 seconds.
+-- Epoch 9
+Norm: 5.89, NNZs: 13, Bias: 22.460938, T: 3636, Avg. loss: 10.141627
+Total training time: 0.00 seconds.
+-- Epoch 10
+Norm: 5.94, NNZs: 13, Bias: 22.478159, T: 4040, Avg. loss: 10.102804
+Total training time: 0.00 seconds.
+-- Epoch 11
+Norm: 5.99, NNZs: 13, Bias: 22.488377, T: 4444, Avg. loss: 10.070927
+Total training time: 0.00 seconds.
+-- Epoch 12
+Norm: 6.03, NNZs: 13, Bias: 22.494533, T: 4848, Avg. loss: 10.044186
+Total training time: 0.00 seconds.
+-- Epoch 13
+Norm: 6.07, NNZs: 13, Bias: 22.498284, T: 5252, Avg. loss: 10.021429
+Total training time: 0.00 seconds.
+-- Epoch 14
+Norm: 6.10, NNZs: 13, Bias: 22.500582, T: 5656, Avg. loss: 10.001845
+Total training time: 0.00 seconds.
+-- Epoch 15
+Norm: 6.14, NNZs: 13, Bias: 22.501986, T: 6060, Avg. loss: 9.984840
+Total training time: 0.00 seconds.
+-- Epoch 16
+Norm: 6.17, NNZs: 13, Bias: 22.502828, T: 6464, Avg. loss: 9.969959
+Total training time: 0.00 seconds.
+-- Epoch 17
+Norm: 6.20, NNZs: 13, Bias: 22.503312, T: 6868, Avg. loss: 9.956845
+Total training time: 0.00 seconds.
+-- Epoch 18
+Norm: 6.23, NNZs: 13, Bias: 22.503563, T: 7272, Avg. loss: 9.945217
+Total training time: 0.00 seconds.
+-- Epoch 19
+Norm: 6.26, NNZs: 13, Bias: 22.503659, T: 7676, Avg. loss: 9.934847
+Total training time: 0.00 seconds.
+-- Epoch 20
+Norm: 6.28, NNZs: 13, Bias: 22.503651, T: 8080, Avg. loss: 9.925552
+Total training time: 0.00 seconds.
+-- Epoch 21
+Norm: 6.30, NNZs: 13, Bias: 22.503571, T: 8484, Avg. loss: 9.917179
+Total training time: 0.00 seconds.
+-- Epoch 22
+Norm: 6.33, NNZs: 13, Bias: 22.503442, T: 8888, Avg. loss: 9.909603
+Total training time: 0.00 seconds.
+-- Epoch 23
+Norm: 6.35, NNZs: 13, Bias: 22.503278, T: 9292, Avg. loss: 9.902720
+Total training time: 0.00 seconds.
+-- Epoch 24
+Norm: 6.37, NNZs: 13, Bias: 22.503089, T: 9696, Avg. loss: 9.896442
+Total training time: 0.00 seconds.
+-- Epoch 25
+Norm: 6.39, NNZs: 13, Bias: 22.502884, T: 10100, Avg. loss: 9.890695
+Total training time: 0.00 seconds.
+-- Epoch 26
+Norm: 6.41, NNZs: 13, Bias: 22.502666, T: 10504, Avg. loss: 9.885415
+Total training time: 0.00 seconds.
+-- Epoch 27
+Norm: 6.42, NNZs: 13, Bias: 22.502440, T: 10908, Avg. loss: 9.880550
+Total training time: 0.00 seconds.
+-- Epoch 28
+Norm: 6.44, NNZs: 13, Bias: 22.502208, T: 11312, Avg. loss: 9.876053
+Total training time: 0.00 seconds.
+-- Epoch 29
+Norm: 6.46, NNZs: 13, Bias: 22.501974, T: 11716, Avg. loss: 9.871885
+Total training time: 0.00 seconds.
+-- Epoch 30
+Norm: 6.47, NNZs: 13, Bias: 22.501737, T: 12120, Avg. loss: 9.868010
+Total training time: 0.00 seconds.
+-- Epoch 31
+Norm: 6.48, NNZs: 13, Bias: 22.501500, T: 12524, Avg. loss: 9.864399
+Total training time: 0.00 seconds.
+-- Epoch 32
+Norm: 6.50, NNZs: 13, Bias: 22.501263, T: 12928, Avg. loss: 9.861026
+Total training time: 0.00 seconds.
+-- Epoch 33
+Norm: 6.51, NNZs: 13, Bias: 22.501027, T: 13332, Avg. loss: 9.857868
+Total training time: 0.00 seconds.
+-- Epoch 34
+Norm: 6.52, NNZs: 13, Bias: 22.500794, T: 13736, Avg. loss: 9.854906
+Total training time: 0.00 seconds.
+-- Epoch 35
+Norm: 6.54, NNZs: 13, Bias: 22.500562, T: 14140, Avg. loss: 9.852120
+Total training time: 0.00 seconds.
+-- Epoch 36
+Norm: 6.55, NNZs: 13, Bias: 22.500333, T: 14544, Avg. loss: 9.849496
+Total training time: 0.00 seconds.
+-- Epoch 37
+Norm: 6.56, NNZs: 13, Bias: 22.500107, T: 14948, Avg. loss: 9.847019
+Total training time: 0.00 seconds.
+-- Epoch 38
+Norm: 6.57, NNZs: 13, Bias: 22.499884, T: 15352, Avg. loss: 9.844678
+Total training time: 0.00 seconds.
+-- Epoch 39
+Norm: 6.58, NNZs: 13, Bias: 22.499664, T: 15756, Avg. loss: 9.842461
+Total training time: 0.00 seconds.
+-- Epoch 40
+Norm: 6.59, NNZs: 13, Bias: 22.499448, T: 16160, Avg. loss: 9.840359
+Total training time: 0.00 seconds.
+-- Epoch 41
+Norm: 6.60, NNZs: 13, Bias: 22.499235, T: 16564, Avg. loss: 9.838361
+Total training time: 0.00 seconds.
+-- Epoch 42
+Norm: 6.61, NNZs: 13, Bias: 22.499026, T: 16968, Avg. loss: 9.836462
+Total training time: 0.00 seconds.
+-- Epoch 43
+Norm: 6.61, NNZs: 13, Bias: 22.498821, T: 17372, Avg. loss: 9.834652
+Total training time: 0.00 seconds.
+-- Epoch 44
+Norm: 6.62, NNZs: 13, Bias: 22.498618, T: 17776, Avg. loss: 9.832926
+Total training time: 0.00 seconds.
+-- Epoch 45
+Norm: 6.63, NNZs: 13, Bias: 22.498420, T: 18180, Avg. loss: 9.831278
+Total training time: 0.00 seconds.
+-- Epoch 46
+Norm: 6.64, NNZs: 13, Bias: 22.498225, T: 18584, Avg. loss: 9.829703
+Total training time: 0.00 seconds.
+-- Epoch 47
+Norm: 6.65, NNZs: 13, Bias: 22.498034, T: 18988, Avg. loss: 9.828195
+Total training time: 0.00 seconds.
+-- Epoch 48
+Norm: 6.65, NNZs: 13, Bias: 22.497846, T: 19392, Avg. loss: 9.826750
+Total training time: 0.00 seconds.
+-- Epoch 49
+Norm: 6.66, NNZs: 13, Bias: 22.497662, T: 19796, Avg. loss: 9.825365
+Total training time: 0.00 seconds.
+-- Epoch 50
+Norm: 6.67, NNZs: 13, Bias: 22.497481, T: 20200, Avg. loss: 9.824034
+Total training time: 0.00 seconds.
+-- Epoch 51
+Norm: 6.67, NNZs: 13, Bias: 22.497303, T: 20604, Avg. loss: 9.822756
+Total training time: 0.00 seconds.
+-- Epoch 52
+Norm: 6.68, NNZs: 13, Bias: 22.497129, T: 21008, Avg. loss: 9.821527
+Total training time: 0.00 seconds.
+-- Epoch 53
+Norm: 6.68, NNZs: 13, Bias: 22.496959, T: 21412, Avg. loss: 9.820343
+Total training time: 0.00 seconds.
+-- Epoch 54
+Norm: 6.69, NNZs: 13, Bias: 22.496791, T: 21816, Avg. loss: 9.819203
+Total training time: 0.00 seconds.
+-- Epoch 55
+Norm: 6.70, NNZs: 13, Bias: 22.496627, T: 22220, Avg. loss: 9.818103
+Total training time: 0.00 seconds.
+-- Epoch 56
+Norm: 6.70, NNZs: 13, Bias: 22.496466, T: 22624, Avg. loss: 9.817042
+Total training time: 0.00 seconds.
+-- Epoch 57
+Norm: 6.71, NNZs: 13, Bias: 22.496307, T: 23028, Avg. loss: 9.816018
+Total training time: 0.00 seconds.
+-- Epoch 58
+Norm: 6.71, NNZs: 13, Bias: 22.496152, T: 23432, Avg. loss: 9.815028
+Total training time: 0.00 seconds.
+-- Epoch 59
+Norm: 6.72, NNZs: 13, Bias: 22.496000, T: 23836, Avg. loss: 9.814070
+Total training time: 0.00 seconds.
+-- Epoch 60
+Norm: 6.72, NNZs: 13, Bias: 22.495851, T: 24240, Avg. loss: 9.813144
+Total training time: 0.00 seconds.
+-- Epoch 61
+Norm: 6.73, NNZs: 13, Bias: 22.495705, T: 24644, Avg. loss: 9.812247
+Total training time: 0.00 seconds.
+-- Epoch 62
+Norm: 6.73, NNZs: 13, Bias: 22.495561, T: 25048, Avg. loss: 9.811378
+Total training time: 0.00 seconds.
+Convergence after 62 epochs took 0.00 seconds
+mylearn SGDRegressor(alpha=100.0, fit_intercept=True, learning_rate=0.001,
+             max_iter=2000, penalty='l2')
+sklearn SGDRegressor(alpha=0.0001, average=False, early_stopping=False, epsilon=0.1,
+             eta0=0.01, fit_intercept=True, l1_ratio=0.15,
+             learning_rate='invscaling', loss='squared_loss', max_iter=1000,
+             n_iter_no_change=5, penalty='l2', power_t=0.25, random_state=0,
+             shuffle=False, tol=0.001, validation_fraction=0.1, verbose=1,
+             warm_start=False)
+
+mylearn r2: 0.7536805325079965
+sklearn r2: 0.7726625361651305
+abs diff:  0.018982003657133983
+
+mylearn MSE: 20.9725558257425
+sklearn MSE: 19.35635741707789
+abs diff:  1.6161984086646086
+
+
+comparing intercept_
+mylearn:
+ [22.52750695]
+sklearn:
+ [22.49556092]
+abs diff:
+ [0.03194603]
+
+comparing coef_
+mylearn:
+ [-0.75012535  0.61875511 -0.45444096  0.73627134 -0.67667947  2.701619
+ -0.2264499  -1.43748847  0.35879432 -0.59072382 -1.85702883  0.67544238
+ -2.74064391]
+sklearn:
+ [-1.02564047  1.00319891 -0.04642068  0.66953332 -1.78091006  2.66529508
+ -0.0880179  -2.92775895  1.88047852 -1.53553664 -2.26919812  0.72227671
+ -3.51687527]
+abs diff:
+ [0.27551512 0.3844438  0.40802028 0.06673802 1.10423059 0.03632392
+ 0.13843201 1.49027049 1.5216842  0.94481282 0.41216929 0.04683433
+ 0.77623136]
+
+================================================================================
+Testing 1D diabetes
+End testing
+28.64875817298889
