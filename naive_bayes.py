@@ -1,85 +1,69 @@
 import numpy as np
-from collections import Counter
+from sklearn.base import BaseEstimator
+from sklearn.preprocessing import LabelBinarizer
 
-class NaiveBayes_v0:
+class NaiveBayes(BaseEstimator):
     """
-    First implementation of Naive Bayes
+    sklearn's implementation of Naive Bayes MultinomialNB
     """
-    def __init__(self):
-        pass
+    def __init__(self, alpha=1.0):
+        self.alpha = 1.0
+
+    def _count(self, X, Y):
+        """Count and smooth feature occurrences."""
+        self.feature_count_ += np.dot(Y.T, X)
+        self.class_count_ += Y.sum(axis=0)
+
+
+    def _update_class_log_prior(self):
+        log_class_count = np.log(self.class_count_)
+        self.class_log_prior_ = (log_class_count -
+                                     np.log(self.class_count_.sum()))
     
+
+    def _update_feature_log_prob(self):
+        """Apply smoothing to raw counts and recompute log probabilities"""
+        smoothed_fc = self.feature_count_ + self.alpha
+        smoothed_cc = smoothed_fc.sum(axis=1)
+        
+        # https://docs.scipy.org/doc/numpy/reference/generated/numpy.reshape.html
+        # One shape dimension can be -1. In this case, the value is inferred
+        # from the length of the array and remaining dimensions.
+        self.feature_log_prob_ = (np.log(smoothed_fc) -
+                                  np.log(smoothed_cc.reshape(-1, 1)))
+
+
     def fit(self, X, y):
 
-        c = Counter(y)
-        self.k = len(c)
-        self.phi = [c[i]/len(y) for i in range(self.k)]
+        _, n_features = X.shape
 
-        m, n = X.shape
-        self.phi_feature = np.empty(shape=(self.k, n))
-        for i, _ in enumerate(self.phi_feature):
-            indices = y == i
-            row = (X[indices].sum(axis=0) + 1) / (c[i] + self.k)
-            self.phi_feature[i] = row
+        labelbin = LabelBinarizer()
+        Y = labelbin.fit_transform(y)
+        # if y is binary, we need to add
+        # one extra column
+        if Y.shape[1] == 1:
+            Y = np.concatenate((1 - Y, Y), axis=1)
 
-    def predict(self, X):
-        res = np.empty(len(X))
-        for r in range(len(X)):
-            prob = []
-            for i in range(self.k):
-                p = np.sum(np.log(self.phi_feature[i][X[r] > 0])) + np.log(self.phi[i])
-                prob.append(p)
-            res[r] = np.argmax(np.array(prob))
-        return res
+        self.classes_ = labelbin.classes_
 
 
-class NaiveBayes_v1:
-    """
-    First implementation of Naive Bayes MultinomialNB
-    """
-    def __init__(self):
-        pass
-    
-    def fit(self, X, y):
-        # n_classes = np.unique(y)
-        # print(n_classes)
-        c = Counter(y)
-        self.k = len(c)
-        # print(c)
-        self.phi = [c[i]/len(y) for i in range(self.k)]
-        # print(self.phi, sum(self.phi))
-        m, n = X.shape
-        self.phi_feature = np.empty(shape=(self.k, n))
-        # print(self.phi_feature.shape)
-        if self.k > 2:
-            s = X.sum(axis=0)
-            for i, _ in enumerate(self.phi_feature):
-                indices = y == i
-                row = (X[indices].sum(axis=0) + 1) / (s + self.k)
-                self.phi_feature[i] = row
-        else:
-            for i, _ in enumerate(self.phi_feature):
-                indices = y == i
-                row = (X[indices].sum(axis=0) + 1) / (c[i] + self.k)
-                self.phi_feature[i] = row
-        # print(self.phi_feature.sum(axis=1))
+        n_effective_classes = Y.shape[1]
+        self.class_count_ = np.zeros(n_effective_classes, dtype=np.float64)
+        self.feature_count_ = np.zeros((n_effective_classes, n_features),
+                                       dtype=np.float64)
+
+        self._count(X, Y)
+        self._update_feature_log_prob()
+        self._update_class_log_prior()
         return self
 
+    def _joint_log_likelihood(self, X):
+        """Calculate the posterior log probability of the samples X"""
+        return np.dot(X, self.feature_log_prob_.T) + self.class_log_prior_
+
     def predict(self, X):
-        n, _ = X.shape
-        res = np.empty(n)
-        for r in range(n):
-            prob = []
-            for i in range(self.k):
-                # print(X[r][X[r] == 1].shape)
-                # print([X[r][X[r] == 1]].shape)
-                p = np.sum(np.log( self.phi_feature[i][X[r] > 0] )) + np.log(self.phi[i])
-                # print(i, p)
-                prob.append(p)
-            # print(prob)
-            res[r] = np.argmax(np.array(prob))
-        return res
-
-
+        jll = self._joint_log_likelihood(X)
+        return self.classes_[np.argmax(jll, axis=1)]
 
 if __name__ == '__main__':
     from evaluation import test
@@ -89,35 +73,45 @@ if __name__ == '__main__':
     from sklearn.model_selection import train_test_split
     from sklearn.datasets import fetch_20newsgroups
     from sklearn.feature_extraction.text import CountVectorizer
-    
+    from sklearn.naive_bayes import MultinomialNB
+
+    X = np.random.randint(5, size=(7, 10))
+    y = np.array([1, 2, 3, 4, 5, 6, 1])
+    print(X)
+    # from sklearn.naive_bayes import MultinomialNB
+    clf = MultinomialNB()
+    clf.fit(X, y)
+    print(clf.predict(X[2:3]))
+
+
+    clf = NaiveBayes()
+    clf.fit(X, y)
+    print(clf.predict(X[2:3]))
+
+    # emails = load_data('emails.csv')
+    # emails.drop_duplicates(inplace = True)
+    # emails_bow = CountVectorizer(stop_words='english').fit_transform(emails['text'])
+
+    # X_train, X_test, y_train, y_test = train_test_split(emails_bow, emails['spam'], 
+    #                                                     test_size = 0.20, 
+    #                                                     random_state = 0,
+    #                                                     stratify = emails['spam'])
+
+    # test(NaiveBayes_v1(), X_train, X_test, y_train, y_test)
 
 
 
+    # categories = ['alt.atheism', 'soc.religion.christian',
+    #               'comp.graphics', 'sci.med']
+    # twenty_train = fetch_20newsgroups(subset='train',
+    #     categories=categories, shuffle=True, random_state=42)
+    # vectorizer = CountVectorizer(stop_words='english')
+    # X_train = vectorizer.fit_transform(twenty_train.data)
+    # y_train = twenty_train.target
 
-    emails = load_data('emails.csv')
-    emails.drop_duplicates(inplace = True)
-    emails_bow = CountVectorizer(stop_words='english').fit_transform(emails['text'])
+    # twenty_test = fetch_20newsgroups(subset='test',
+    #  categories=categories, shuffle=True, random_state=42)
+    # X_test = vectorizer.transform(twenty_test.data)
+    # y_test = twenty_test.target
 
-    X_train, X_test, y_train, y_test = train_test_split(emails_bow, emails['spam'], 
-                                                        test_size = 0.20, 
-                                                        random_state = 0,
-                                                        stratify = emails['spam'])
-
-    test(NaiveBayes_v1(), X_train, X_test, y_train, y_test)
-
-
-
-    categories = ['alt.atheism', 'soc.religion.christian',
-                  'comp.graphics', 'sci.med']
-    twenty_train = fetch_20newsgroups(subset='train',
-        categories=categories, shuffle=True, random_state=42)
-    vectorizer = CountVectorizer(stop_words='english')
-    X_train = vectorizer.fit_transform(twenty_train.data)
-    y_train = twenty_train.target
-
-    twenty_test = fetch_20newsgroups(subset='test',
-     categories=categories, shuffle=True, random_state=42)
-    X_test = vectorizer.transform(twenty_test.data)
-    y_test = twenty_test.target
-
-    test(NaiveBayes_v1(), X_train, X_test, y_train, y_test)
+    # test(NaiveBayes_v1(), X_train, X_test, y_train, y_test)
