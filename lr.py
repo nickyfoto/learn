@@ -90,6 +90,16 @@ class LogisticRegression(BaseEstimator):
         scores = sigmoid(scores)
         return scores.ravel() if scores.shape[1] == 1 else scores
 
+    def predict_proba(self, X):
+        scores = self.decision_function(X)
+
+        if scores.ndim == 1:
+            return np.vstack([1 - scores, scores]).T
+
+        # print(scores, scores.argmax(axis=1))
+        scores /= scores.sum(axis=1).reshape((scores.shape[0], -1))
+        # print(scores.sum(axis=1))
+        return scores
     def predict(self, X):
         scores = self.decision_function(X)
 
