@@ -78,7 +78,8 @@ class LogisticRegression(BaseEstimator):
                     gradient = np.dot(X.T, error) 
                     self.coef_[i] -= self.learning_rate * gradient.T / self.m
                     self.intercept_[i] -= self.learning_rate * error.sum() / self.m
-
+        return self
+        
     def fit(self, X, y):
 
         n_classes = len(np.unique(y))
