@@ -20,6 +20,88 @@ class LogisticRegression(BaseEstimator):
     intercept_ : array, shape (1,) if n_classes == 2 else (n_classes,)
         Constants in decision function.
     """
+    def __init__(self, 
+                    fit_intercept = True,
+                    max_iter = 2000,
+                    learning_rate = 0.5,
+                    print_cost = False):
+        self.fit_intercept = fit_intercept
+        self.max_iter = int(max_iter)
+        self.learning_rate = learning_rate
+        self.print_cost = print_cost
+
+    def fit_binary(self, X, y):
+        self.le = LabelEncoder()
+        y = self.le.fit_transform(y)
+        self.classes_ = self.le.classes_
+        y.shape = (self.m, 1)
+        for step in range(self.max_iter):  
+            preds = sigmoid(np.dot(X, self.coef_.T) + self.intercept_)
+            error = preds - y
+            gradient = np.dot(X.T, error) 
+            self.coef_ -= self.learning_rate * gradient.T / self.m
+            self.intercept_ -= self.learning_rate * error.sum() / self.m
+            
+        return self
+
+    def fit_multiclass(self, X, y):
+        self.le = LabelEncoder()
+        y = self.le.fit_transform(y)
+        self.classes_ = self.le.classes_
+
+        for i in range(len(self.classes_)):
+            y_i = np.apply_along_axis(lambda x: np.where(x == i, 1, 0), axis=0, arr=y)
+
+            for step in range(self.max_iter):  
+                preds = sigmoid(np.dot(X, self.coef_[i].T) + self.intercept_[i])
+                error = preds - y_i
+                gradient = np.dot(X.T, error) 
+                self.coef_[i] -= self.learning_rate * gradient.T / self.m
+                self.intercept_[i] -= self.learning_rate * error.sum() / self.m
+
+    def fit(self, X, y):
+
+        n_classes = len(np.unique(y))
+
+        self.m, n_features = X.shape
+        
+        
+        if n_classes == 2:
+            self.coef_ = np.zeros(shape=(1, n_features))
+            if self.fit_intercept:
+                self.intercept_ = np.zeros(shape=(1,))
+            return self.fit_binary(X, y)
+        else:
+            self.coef_ = np.zeros(shape=(n_classes, n_features))
+            if self.fit_intercept:
+                self.intercept_ = np.zeros(shape=(n_classes,))    
+            return self.fit_multiclass(X, y)
+        
+
+    def score(self, X, y):
+        return accuracy_score(y, self.predict(X))
+
+
+
+
+    def decision_function(self, X):
+        scores = np.dot(X, self.coef_.T) + self.intercept_
+        # print(scores)
+        scores = sigmoid(scores)
+        return scores.ravel() if scores.shape[1] == 1 else scores
+
+    def predict(self, X):
+        scores = self.decision_function(X)
+
+        if len(scores.shape) == 1:
+            indices = scores.round().astype(np.int)
+        else:
+            indices = scores.argmax(axis=1)
+        return self.classes_[indices]
+
+
+class LogisticRegression_v1(BaseEstimator):
+    
     def __init__(self, num_iterations = 2000, 
                        learning_rate = 0.5, 
                        fit_intercept = True,
@@ -178,6 +260,15 @@ if __name__ == '__main__':
     from sklearn.model_selection import train_test_split
     from sklearn import linear_model
     
+
+    X = np.array([[-1, -1], [-2, -1], [1, 1], [2, 1]])
+    y = np.array([0, 0, 1, 1])
+    y = np.array([2, 2, 5, 5])
+    clf = LogisticRegression_v2()
+    clf.fit(X, y)
+    print(clf.predict(X))
+
+
 
     # def sklearn_compare(learn, sk, X_train, X_test, y_train, y_test):
     #     data = (X_train, X_test, y_train, y_test)
