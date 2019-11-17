@@ -4,6 +4,9 @@ import numpy as np
 from sklearn.metrics import classification_report,confusion_matrix, accuracy_score
 from sklearn.metrics import mean_squared_error, r2_score
 
+def within(sk_val, val, tol):
+    return sk_val - tol < val < sk_val + tol
+
 class TestSK:
     """
     Compare the performance of our implementation

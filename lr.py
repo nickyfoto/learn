@@ -24,23 +24,34 @@ class LogisticRegression(BaseEstimator):
                     fit_intercept = True,
                     max_iter = 2000,
                     learning_rate = 0.5,
-                    print_cost = False):
+                    print_cost = False,
+                    sgd = False):
         self.fit_intercept = fit_intercept
         self.max_iter = int(max_iter)
         self.learning_rate = learning_rate
         self.print_cost = print_cost
+        self.sgd = sgd
 
     def fit_binary(self, X, y):
         self.le = LabelEncoder()
         y = self.le.fit_transform(y)
         self.classes_ = self.le.classes_
         y.shape = (self.m, 1)
-        for step in range(self.max_iter):  
-            preds = sigmoid(np.dot(X, self.coef_.T) + self.intercept_)
-            error = preds - y
-            gradient = np.dot(X.T, error) 
-            self.coef_ -= self.learning_rate * gradient.T / self.m
-            self.intercept_ -= self.learning_rate * error.sum() / self.m
+        for step in range(self.max_iter):
+            if self.sgd:
+                for idx, x in enumerate(X):
+                    pred = sigmoid(np.dot(x, self.coef_.T) + self.intercept_)
+                    error = pred - y[idx]
+                    gradient = x * error
+                    self.coef_ -= self.learning_rate * gradient.T
+                    self.intercept_ -= self.learning_rate * error
+
+            else:
+                preds = sigmoid(np.dot(X, self.coef_.T) + self.intercept_)
+                error = preds - y
+                gradient = np.dot(X.T, error) 
+                self.coef_ -= self.learning_rate * gradient.T / self.m
+                self.intercept_ -= self.learning_rate * error.sum() / self.m
             
         return self
 
@@ -52,12 +63,21 @@ class LogisticRegression(BaseEstimator):
         for i in range(len(self.classes_)):
             y_i = np.apply_along_axis(lambda x: np.where(x == i, 1, 0), axis=0, arr=y)
 
-            for step in range(self.max_iter):  
-                preds = sigmoid(np.dot(X, self.coef_[i].T) + self.intercept_[i])
-                error = preds - y_i
-                gradient = np.dot(X.T, error) 
-                self.coef_[i] -= self.learning_rate * gradient.T / self.m
-                self.intercept_[i] -= self.learning_rate * error.sum() / self.m
+            for step in range(self.max_iter):
+                if self.sgd:
+                    for idx, x in enumerate(X):
+                        pred = sigmoid(np.dot(x, self.coef_[i].T) + self.intercept_[i])
+                        error = pred - y_i[idx]
+                        gradient = x * error
+                        self.coef_[i] -= self.learning_rate * gradient
+                        self.intercept_[i] -= self.learning_rate * error
+
+                else:
+                    preds = sigmoid(np.dot(X, self.coef_[i].T) + self.intercept_[i])
+                    error = preds - y_i
+                    gradient = np.dot(X.T, error) 
+                    self.coef_[i] -= self.learning_rate * gradient.T / self.m
+                    self.intercept_[i] -= self.learning_rate * error.sum() / self.m
 
     def fit(self, X, y):
 
@@ -80,9 +100,6 @@ class LogisticRegression(BaseEstimator):
 
     def score(self, X, y):
         return accuracy_score(y, self.predict(X))
-
-
-
 
     def decision_function(self, X):
         scores = np.dot(X, self.coef_.T) + self.intercept_
@@ -197,13 +214,13 @@ class LogisticRegressionSGD(BaseEstimator):
     Logistic regression with stochastic gradient descent
     """
 
-    def __init__(self, num_iterations = 100, 
+    def __init__(self, max_iter = 100, 
                         learning_rate = .1, 
                         fit_intercept = True,
-                        print_cost = True,
+                        print_cost = False,
                         C = 0,
                         penalty=None):
-        self.num_iterations = num_iterations
+        self.max_iter = int(max_iter)
         self.learning_rate = learning_rate
         self.fit_intercept = fit_intercept
         self.print_cost = print_cost
