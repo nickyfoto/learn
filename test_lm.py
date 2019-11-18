@@ -1,3 +1,10 @@
+"""
+pytest -svv test_lm.py
+pytest -svv -m 'not smoke' test_lm.py
+pytest -vv --html=report.html --capture=sys
+
+"""
+
 import pytest
 from pytest import approx
 
@@ -8,6 +15,47 @@ from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import StandardScaler
 
 from lm import LinearRegression, SGDRegressor
+
+
+
+
+
+
+
+
+# sgdreg.fit(X, y)
+def test_basic_sgdregressor():
+    X = np.array([[1, 1], [1, 2], [2, 2], [2, 3]])
+    # y = 1 * x_0 + 2 * x_1 + 3
+    y = np.dot(X, np.array([1, 2])) + 3
+    sksgdreg = linear_model.SGDRegressor(max_iter=1000, tol=None, penalty='none', random_state=0,
+                                      learning_rate='constant', verbose=0, shuffle=False, eta0=1e-1)
+    sksgdreg.fit(X, y)
+    print()
+    sgdreg = SGDRegressor(learning_rate=1e-1)
+    sgdreg.fit(X, y)
+    print(sgdreg)
+    print('sk score', sksgdreg.score(X, y))
+    print('my score', sgdreg.score(X, y))
+
+
+    print(sksgdreg.coef_, sksgdreg.intercept_)
+    print(sgdreg.coef_, sgdreg.intercept_)
+    assert sksgdreg.score(X, y) == sgdreg.score(X, y)
+    assert np.allclose(sksgdreg.coef_,  sgdreg.coef_)
+    assert np.allclose(sksgdreg.intercept_,  sgdreg.intercept_)
+# sgdreg.coef_, sgdreg.intercept_ 
+# sgdreg.predict(np.array([[3, 5]]))
+
+
+
+
+
+
+
+
+
+
 
 
 boston = datasets.load_boston()
@@ -26,14 +74,21 @@ scaled_X = StandardScaler().fit_transform(X)
 
 
 
+
+
+
+
+
+
+
 test1 = X, y, reg, skreg
 test2 = scaled_X, y, sgd, sksgd
 ids = ['boston, myLR, skLR',
        'scaled boston, mySGD, skSGD']
 
-# pytest -vv --html=report.html --capture=sys
 
 
+@pytest.mark.smoke
 @pytest.mark.parametrize("X, y, reg1, reg2", [
                           test1,
                           test2

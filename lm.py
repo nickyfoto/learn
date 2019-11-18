@@ -1,6 +1,13 @@
+"""
+Linear Model
+
+Linear Regression
+"""
+
 import numpy as np
 
 from sklearn.base import BaseEstimator
+from sklearn.metrics import r2_score
 
 class LinearRegression(BaseEstimator):
     
@@ -48,54 +55,39 @@ class SGDRegressor(BaseEstimator):
     def __init__(self, fit_intercept=True, max_iter=1000,
                     learning_rate=0.001,
                     penalty=None,
-                    alpha=0):
+                    c_lambda=0):
 
-        self.weights = None
         self.fit_intercept = fit_intercept
-        self.max_iter = max_iter
+        self.max_iter = int(max_iter)
         self.learning_rate = learning_rate
         self.penalty = penalty
-        self.alpha = alpha
-
-    def _fit_intercept(self, X):
-        intercept = np.ones((X.shape[0], 1))
-        return np.hstack((intercept, X))
+        self.c_lambda = c_lambda
 
     def fit(self, X, y):
         if self.fit_intercept:
-            X = self._fit_intercept(X)
+            self.intercept_ = np.zeros(shape=(1,))
+        self.m, n_features = X.shape
+        self.coef_ = np.zeros(shape=(1, n_features))
         
-        self.m, self.n = X.shape
-        self.weights = np.zeros((self.n, 1))
-        for i in range(self.max_iter):
-            for j in range(self.m):
-                pred = np.dot(X[j], self.weights)
-                error = pred - y[j]
-                if self.penalty:
-                    gradient = (error * X[[j]]).T
-                    self.weights[0] -= self.learning_rate * gradient[0]
-                    self.weights[1:] -= self.learning_rate * (gradient[1:] +  
-                                                            self.alpha * self.weights[1:] / self.m)
-                else:
-                    gradient = error * X[[j]]
-                    self.weights -= self.learning_rate*gradient.T
-        return self
-    
-    @property
-    def intercept_(self):
-        return self.weights[:1].flatten()
+        y.shape = (self.m, 1)
 
-    @property
-    def coef_(self):
-        if self.n == 1:
-            return self.weights[1:]
-        return self.weights[1:].flatten()
+        for i in range(self.max_iter):
+            for idx, x in enumerate(X):
+                pred = np.dot(x, self.coef_.T) + self.intercept_
+                error = pred - y[idx]
+                gradient = x * error
+                if self.penalty:
+                    self.coef_ -= self.learning_rate * (gradient.T + self.c_lambda * self.coef_ / self.m)
+                else:
+                    self.coef_ -= self.learning_rate * gradient.T
+                self.intercept_ -= self.learning_rate * error
+        return self
 
     def predict(self, X):
-        if self.fit_intercept:
-            X = self._fit_intercept(X)
-        return np.dot(X, self.weights)
+        return np.dot(X, self.coef_.T) + self.intercept_
 
+    def score(self, X, y):
+        return r2_score(y_true=y.flatten(), y_pred = self.predict(X))
 
 class Ridge(BaseEstimator):
     """
