@@ -25,12 +25,28 @@ class LogisticRegression(BaseEstimator):
                     max_iter = 2000,
                     learning_rate = 0.5,
                     print_cost = False,
-                    sgd = False):
+                    sgd = False,
+                    penalty = None,
+                    c_lambda = 0,):
         self.fit_intercept = fit_intercept
         self.max_iter = int(max_iter)
         self.learning_rate = learning_rate
         self.print_cost = print_cost
         self.sgd = sgd
+        self.c_lambda = c_lambda
+        self.penalty = penalty
+        
+
+    def log_likelihood(self, preds, target, i=None):
+        ll = - (np.dot(target.T,  np.log(preds + np.finfo(float).eps)) + 
+                np.dot((1 - target).T, np.log(1 - preds + np.finfo(float).eps))) / self.m
+        if self.penalty:
+            if len(self.classes_) == 2:
+                ll += self.c_lambda * np.square(self.coef_).sum() / (2 * self.m)
+            else:
+                ll += self.c_lambda * np.square(self.coef_[i]).sum() / (2 * self.m)
+        return ll
+
 
     def fit_binary(self, X, y):
         self.le = LabelEncoder()
@@ -43,16 +59,29 @@ class LogisticRegression(BaseEstimator):
                     pred = sigmoid(np.dot(x, self.coef_.T) + self.intercept_)
                     error = pred - y[idx]
                     gradient = x * error
-                    self.coef_ -= self.learning_rate * gradient.T
+                    if self.penalty == 'l2':
+                        self.coef_ -= self.learning_rate * (gradient.T + self.c_lambda * self.coef_ / self.m)
+                    else:
+                        self.coef_ -= self.learning_rate * gradient.T
                     self.intercept_ -= self.learning_rate * error
+
+                preds = sigmoid(np.dot(X, self.coef_.T) + self.intercept_)
+                cost = self.log_likelihood(preds = preds, target = y)
 
             else:
                 preds = sigmoid(np.dot(X, self.coef_.T) + self.intercept_)
                 error = preds - y
-                gradient = np.dot(X.T, error) 
-                self.coef_ -= self.learning_rate * gradient.T / self.m
+                gradient = np.dot(X.T, error)
+                if self.penalty == 'l2':
+                    self.coef_ -= self.learning_rate * (gradient.T + self.c_lambda * self.coef_) / self.m
+                else:
+                    self.coef_ -= self.learning_rate * gradient.T / self.m
                 self.intercept_ -= self.learning_rate * error.sum() / self.m
-            
+                
+                cost = self.log_likelihood(preds = preds, target = y)
+
+            self.costs[step] = cost
+
         return self
 
     def fit_multiclass(self, X, y):
@@ -62,24 +91,35 @@ class LogisticRegression(BaseEstimator):
 
         for i in range(len(self.classes_)):
             y_i = np.apply_along_axis(lambda x: np.where(x == i, 1, 0), axis=0, arr=y)
-
+            
             for step in range(self.max_iter):
                 if self.sgd:
                     for idx, x in enumerate(X):
                         pred = sigmoid(np.dot(x, self.coef_[i].T) + self.intercept_[i])
                         error = pred - y_i[idx]
                         gradient = x * error
-                        self.coef_[i] -= self.learning_rate * gradient
+                        if self.penalty == 'l2':
+                            self.coef_[i] -= self.learning_rate * (gradient + self.c_lambda * self.coef_[i] / self.m)
+                        else:
+                            self.coef_[i] -= self.learning_rate * gradient
                         self.intercept_[i] -= self.learning_rate * error
-
+                    preds = sigmoid(np.dot(X, self.coef_[i].T) + self.intercept_[i])
                 else:
                     preds = sigmoid(np.dot(X, self.coef_[i].T) + self.intercept_[i])
                     error = preds - y_i
                     gradient = np.dot(X.T, error) 
-                    self.coef_[i] -= self.learning_rate * gradient.T / self.m
+                    if self.penalty == 'l2':
+                        self.coef_[i] -= self.learning_rate * (gradient.T + self.c_lambda * self.coef_[i])/ self.m
+                    else:
+                        self.coef_[i] -= self.learning_rate * gradient.T / self.m
                     self.intercept_[i] -= self.learning_rate * error.sum() / self.m
+
+                cost = self.log_likelihood(preds = preds, target = y_i, i=i)
+                self.costs[i][step] = cost
+        # self.costs.append(cost_i)
+
         return self
-        
+
     def fit(self, X, y):
 
         n_classes = len(np.unique(y))
@@ -89,11 +129,13 @@ class LogisticRegression(BaseEstimator):
         
         if n_classes == 2:
             self.coef_ = np.zeros(shape=(1, n_features))
+            self.costs = np.empty(self.max_iter)
             if self.fit_intercept:
                 self.intercept_ = np.zeros(shape=(1,))
             return self.fit_binary(X, y)
         else:
             self.coef_ = np.zeros(shape=(n_classes, n_features))
+            self.costs = np.empty((n_classes, self.max_iter))
             if self.fit_intercept:
                 self.intercept_ = np.zeros(shape=(n_classes,))    
             return self.fit_multiclass(X, y)

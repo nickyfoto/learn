@@ -83,8 +83,11 @@ def predict_image(clf, fname, num_px, classes, plot_image=False):
 
 # plots utils
 
-def costs_plot(clf):
-    plt.plot(clf.costs)
+def plot_costs(clf):
+    if clf.costs.ndim > 1:
+        plt.plot(clf.costs.T.mean(axis=1))
+    else:
+        plt.plot(clf.costs)
     plt.ylabel('cost')
     plt.xlabel('iterations (per hundreds)')
     plt.title("Learning rate =" + str(clf.learning_rate))
