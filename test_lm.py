@@ -35,15 +35,28 @@ def test_basic_sgdregressor():
     sgdreg = SGDRegressor(learning_rate=1e-1)
     sgdreg.fit(X, y)
     print(sgdreg)
+
+
+    sgdreg_batch = SGDRegressor(learning_rate=1e-1, batch=True, max_iter=1e4)
+    print(sgdreg_batch)
+    sgdreg_batch.fit(X, y)
+
     print('sk score', sksgdreg.score(X, y))
     print('my score', sgdreg.score(X, y))
+    print('my batch', sgdreg_batch.score(X, y))
 
 
     print(sksgdreg.coef_, sksgdreg.intercept_)
-    print(sgdreg.coef_, sgdreg.intercept_)
+    print(sgdreg.coef_.flatten(), sgdreg.intercept_)    
+    print(sgdreg_batch.coef_.flatten(), sgdreg_batch.intercept_)    
+
+    assert sgdreg_batch.score(X, y) == 1.0
+
     assert sksgdreg.score(X, y) == sgdreg.score(X, y)
     assert np.allclose(sksgdreg.coef_,  sgdreg.coef_)
+    assert np.allclose(sksgdreg.coef_,  sgdreg_batch.coef_)
     assert np.allclose(sksgdreg.intercept_,  sgdreg.intercept_)
+    assert np.allclose(sksgdreg.intercept_,  sgdreg_batch.intercept_)
 # sgdreg.coef_, sgdreg.intercept_ 
 # sgdreg.predict(np.array([[3, 5]]))
 
