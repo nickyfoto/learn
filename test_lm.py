@@ -13,17 +13,38 @@ from sklearn import linear_model, datasets
 from sklearn.metrics import mean_squared_error, r2_score
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import StandardScaler
+from sklearn.metrics import mean_squared_error as mse
 
 from lm import LinearRegression, SGDRegressor
+from utils import construct_polynomial_feats
+from evaluation import within
+
+def test_batch_sgdregressor():
+    # test when fit_intercept = False
+
+    POLY_DEGREE = 5
+    NUM_OBS = 1000
+    # random generator
+    rng = np.random.RandomState(seed=4)
+    true_weight = rng.rand(POLY_DEGREE + 1, 1)
+    true_weight[2:, :] = 0
+    x_all = np.linspace(-5, 5, NUM_OBS)
+    x_all_feat = construct_polynomial_feats(x_all, POLY_DEGREE)
+    y_all = np.dot(x_all_feat, true_weight) + rng.randn(x_all_feat.shape[0], 1) 
+    indices = rng.permutation(NUM_OBS)
+    train_indices = indices[:NUM_OBS//2]
+    test_indices = indices[NUM_OBS//2:]
+    # big learning rate will produce underflow error
+    reg = SGDRegressor(fit_intercept=False, batch=True, learning_rate=1e-7,
+                        max_iter=500000)
+    reg.fit(x_all_feat[train_indices], y_all[train_indices])
+    y_test_pred = reg.predict(x_all_feat[test_indices])
+    test_mse = mse(y_pred=y_test_pred, y_true=y_all[test_indices])
+    # print('test rmse: %.4f' % np.sqrt(test_mse))
+    assert within(sk_val=1.1695 , val=np.sqrt(test_mse), tol = 1e-4)
 
 
-
-
-
-
-
-
-# sgdreg.fit(X, y)
+@pytest.mark.smoke
 def test_basic_sgdregressor():
     X = np.array([[1, 1], [1, 2], [2, 2], [2, 3]])
     # y = 1 * x_0 + 2 * x_1 + 3

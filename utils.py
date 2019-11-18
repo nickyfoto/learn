@@ -89,7 +89,7 @@ def plot_costs(clf):
     else:
         plt.plot(clf.costs)
     plt.ylabel('cost')
-    plt.xlabel('iterations (per hundreds)')
+    plt.xlabel('iterations')
     plt.title("Learning rate =" + str(clf.learning_rate))
     plt.show()
 
@@ -122,3 +122,46 @@ def plot_boundary(clf, X, y, grid_step=.01, poly_featurizer=None):
     Z = clf.predict(poly_featurizer.transform(np.c_[xx.ravel(), yy.ravel()]))
     Z = Z.reshape(xx.shape)
     plt.contour(xx, yy, Z, cmap=plt.cm.Paired)
+
+
+def construct_polynomial_feats(x, degree):
+    """
+    Args:
+        x: numpy array of length N, the 1-D observations
+        degree: the max polynomial degree
+    Return:
+        feat: numpy array of shape Nx(degree+1), remember to include 
+        the bias term. feat is in the format of:
+        [[1.0, x1, x1^2, x1^3, ....,],
+         [1.0, x2, x2^2, x2^3, ....,],
+         ......
+        ]
+    """
+    
+    n = x.shape[0]
+    res = np.empty((degree+1,n))
+    for i in range(degree+1):
+        res[i] = np.power(x,i)
+    
+    return res.T
+
+
+def plot_curve(x, y, curve_type='.', color='b', lw=2):
+    plt.plot(x, y, curve_type, color=color, linewidth=lw)
+    plt.xlabel('x')
+    plt.ylabel('y')
+    plt.grid(True)
+
+
+def rmse(pred, label): 
+    '''
+    This is the root mean square error.
+    Args:
+        pred: numpy array of length N * 1, the prediction of labels
+        label: numpy array of length N * 1, the ground truth of labels
+    Return:
+        a float value
+    '''
+    #raise NotImplementedError
+    N = pred.shape 
+    return np.sqrt(((label - pred) ** 2).sum()/N)[0]
