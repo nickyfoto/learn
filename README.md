@@ -1,18 +1,12 @@
 # learn
 
-## Naive Bayes
+### Naive Bayes
 
-- [theoretical guide](https://nickyfoto.github.io/blog/entries/naive-bayes)
-- [implementation step by step](https://github.com/nickyfoto/learn/blob/master/naive_bayes.ipynb)
-- [application examples](https://github.com/nickyfoto/learn/blob/master/naive_bayes_examples.ipynb)
-- [python code](naive_bayes.py)
+- [theory](https://nickyfoto.github.io/blog/entries/naive-bayes) | [implementation](https://github.com/nickyfoto/learn/blob/master/naive_bayes.ipynb) | [examples](https://github.com/nickyfoto/learn/blob/master/naive_bayes_examples.ipynb) | [code](naive_bayes.py)
 
-## Logistic Regression
+### Logistic Regression
 
-- [theoretical guide](https://nickyfoto.github.io/blog/entries/logistic-regression)
-- [implementation step by step](https://github.com/nickyfoto/learn/blob/master/logistic_regression.ipynb)
-- [application examples](https://github.com/nickyfoto/learn/blob/master/logistic_regression_example.ipynb)
-- [python code](https://github.com/nickyfoto/learn/blob/master/lr.py)
+- [theory](https://nickyfoto.github.io/blog/entries/logistic-regression) | [implementation](https://github.com/nickyfoto/learn/blob/master/logistic_regression.ipynb) | [examples](https://github.com/nickyfoto/learn/blob/master/logistic_regression_example.ipynb) | [code](https://github.com/nickyfoto/learn/blob/master/lr.py)
 
 ## Todo
 
