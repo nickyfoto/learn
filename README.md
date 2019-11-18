@@ -2,7 +2,7 @@
 
 ### Linear Regression
 
-- [theory](https://nickyfoto.github.io/blog/entries/linear-regression) | [implementation](https://github.com/nickyfoto/learn/blob/master/linear_regression.ipynb) | examples | [code](https://github.com/nickyfoto/learn/blob/master/lm.py)
+- [theory](https://nickyfoto.github.io/blog/entries/linear-regression) | [implementation](https://github.com/nickyfoto/learn/blob/master/linear_regression.ipynb) | [examples](https://github.com/nickyfoto/learn/blob/master/linear_regression_example.ipynb) | [code](https://github.com/nickyfoto/learn/blob/master/lm.py)
 
 ### Logistic Regression
 
