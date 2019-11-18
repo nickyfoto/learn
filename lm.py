@@ -10,7 +10,9 @@ from sklearn.base import BaseEstimator
 from sklearn.metrics import r2_score
 
 class LinearRegression(BaseEstimator):
-    
+    """
+    Solve theta analytically using normal equation
+    """
     def __init__(self, fit_intercept=True):
         self.weights = None
         self.fit_intercept = fit_intercept
@@ -30,7 +32,7 @@ class LinearRegression(BaseEstimator):
         self.m, self.n = X.shape
         if self.fit_intercept:
             X = self._fit_intercept(X)
-        self.weights = np.linalg.inv(X.T.dot(X)).dot(X.T).dot(y)
+        self.weights = np.linalg.pinv(X.T.dot(X)).dot(X.T).dot(y)
         return self
 
     @property
@@ -55,13 +57,15 @@ class SGDRegressor(BaseEstimator):
     def __init__(self, fit_intercept=True, max_iter=1000,
                     learning_rate=0.001,
                     penalty=None,
-                    c_lambda=0):
+                    c_lambda=0,
+                    batch=False):
 
         self.fit_intercept = fit_intercept
         self.max_iter = int(max_iter)
         self.learning_rate = learning_rate
         self.penalty = penalty
         self.c_lambda = c_lambda
+        self.batch = batch
 
     def fit(self, X, y):
         if self.fit_intercept:
@@ -72,15 +76,22 @@ class SGDRegressor(BaseEstimator):
         y.shape = (self.m, 1)
 
         for i in range(self.max_iter):
-            for idx, x in enumerate(X):
-                pred = np.dot(x, self.coef_.T) + self.intercept_
-                error = pred - y[idx]
-                gradient = x * error
-                if self.penalty:
-                    self.coef_ -= self.learning_rate * (gradient.T + self.c_lambda * self.coef_ / self.m)
-                else:
-                    self.coef_ -= self.learning_rate * gradient.T
-                self.intercept_ -= self.learning_rate * error
+            if self.batch:
+                preds = np.dot(X, self.coef_.T) + self.intercept_
+                error = preds - y
+                gradient = np.dot(X.T, error) 
+                self.coef_ -= self.learning_rate * gradient.T / self.m
+                self.intercept_ -= self.learning_rate * error.sum() / self.m
+            else:
+                for idx, x in enumerate(X):
+                    pred = np.dot(x, self.coef_.T) + self.intercept_
+                    error = pred - y[idx]
+                    gradient = x * error
+                    if self.penalty:
+                        self.coef_ -= self.learning_rate * (gradient.T + self.c_lambda * self.coef_ / self.m)
+                    else:
+                        self.coef_ -= self.learning_rate * gradient.T
+                    self.intercept_ -= self.learning_rate * error
         return self
 
     def predict(self, X):
