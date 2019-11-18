@@ -14,4 +14,5 @@
 
 ## Todo
 
+- [ ] how to implement multinomial in logistic regression
 - [ ] Linter: flake8, pylint
