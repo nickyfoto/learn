@@ -16,6 +16,10 @@
 
 ## Unsupervised Learning
 
+### KMeans
+
+- [theory](http://cs229.stanford.edu/notes/cs229-notes7a.pdf) from cs229 | [implementation](https://github.com/nickyfoto/learn/blob/master/kmeans.ipynb) | [examples](https://github.com/nickyfoto/learn/blob/master/kmeans_example.ipynb) | [code](https://github.com/nickyfoto/learn/blob/master/kmeans.py)
+
 ### Principal Component Analysis (PCA)
 
 - [theory](https://nickyfoto.github.io/blog/entries/svd) | [examples](https://github.com/nickyfoto/learn/blob/master/pca_example.ipynb) | [code](https://github.com/nickyfoto/learn/blob/master/pca_example.ipynb)
