@@ -23,4 +23,5 @@
 ## Todo
 
 - [ ] how to implement multinomial in logistic regression
+- [ ] [Linear Discriminant Analysis (LDA)](https://web.stanford.edu/~hastie/Papers/ESLII.pdf)
 - [ ] Linter: flake8, pylint
