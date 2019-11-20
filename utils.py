@@ -84,13 +84,15 @@ def predict_image(clf, fname, num_px, classes, plot_image=False):
 # plots utils
 
 def plot_costs(clf):
+
     if clf.costs.ndim > 1:
         plt.plot(clf.costs.T.mean(axis=1))
     else:
         plt.plot(clf.costs)
     plt.ylabel('cost')
     plt.xlabel('iterations')
-    plt.title("Learning rate =" + str(clf.learning_rate))
+    if getattr(clf, 'learning_rate', None):
+        plt.title("Learning rate =" + str(clf.learning_rate))
     plt.show()
 
 def scatter_plot(X, y):
