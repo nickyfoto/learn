@@ -1,5 +1,7 @@
 import numpy as np
 from sklearn.base import BaseEstimator
+from scipy.spatial import distance
+
 
 def pairwise_dist(x, y):
     """
@@ -38,34 +40,24 @@ class KMeans(BaseEstimator):
         Return:
             centers: K x D numpy array, the centers. 
         """
-        n_samples, _ = X.shape
-        pi = np.arange(n_samples)
+        # remove duplicate row from X
+        unique_X = np.unique(X, axis=0)
+        m, _ = unique_X.shape
+        indices = np.arange(m)
         if self.random_state is not None:
             np.random.seed(self.random_state)
-        np.random.shuffle(pi)
-        centers = X[pi[:self.n_clusters]]
-        while np.unique(centers, axis=0).shape[0] != self.n_clusters:
-            np.random.shuffle(pi)
-            centers = X[pi[:self.n_clusters]]
-        return centers
+        np.random.shuffle(indices)
+        self.cluster_centers_ = unique_X[indices[:self.n_clusters]]
     
-    def _update_assignment(self, centers, points):
+    def predict(self, X):
         """
-        Args:
-            centers: KxD numpy array, where K is the number of clusters, and D is the dimension
-            points: NxD numpy array, the observations
-        Return:
-            cluster_idx: numpy array of length N, the cluster assignment for each point
-            
-        Hint: You could call pairwise_dist() function.
+        update_assignment
         """
-        # raise NotImplementedError
-        distances = pairwise_dist(points, centers)
-        # distances = distance.cdist(points, centers, metric='euclidean')
-        cluster_idx = np.argmin(distances, axis=1)
-        return cluster_idx
+        dists = distance.cdist(X, self.cluster_centers_, metric='euclidean')
+        return np.argmin(dists, axis=1)
     
-    def _update_centers(self, old_centers, cluster_idx, points):
+    # def _update_centers(self, old_centers, cluster_idx, points):
+    def _update_centers(self, X):
         """
         Args:
             old_centers: old centers KxD numpy array, where K is the number of clusters, and D is the dimension
@@ -76,11 +68,14 @@ class KMeans(BaseEstimator):
         Note:
             It is possible to have fewer centers after this step.
         """
-        # raise NotImplementedError
-        clusters = np.unique(cluster_idx)
-        clusters.shape = (clusters.shape[0], 1)
-        centers = np.apply_along_axis(lambda i: points[cluster_idx==i[0]].mean(axis=0), axis=1, arr=clusters)
-        return centers
+        
+        # clusters = np.unique(cluster_idx)
+        # clusters.shape = (clusters.shape[0], 1)
+        clusters = np.arange(self.n_clusters).reshape(self.n_clusters, 1)
+        self.cluster_centers_ = np.apply_along_axis(
+                                    lambda label: X[self.labels_ == label.item()].mean(axis=0), 
+                                    axis=1, arr=clusters)
+        # return centers
 
     def _get_loss(self, centers, cluster_idx, points):
         """
@@ -104,9 +99,7 @@ class KMeans(BaseEstimator):
             loss += np.sum(np.square(points_k - centers[k]))
         return loss
         
-    def predict(self, X):
-        dist = pairwise_dist(X, self.cluster_centers_)
-        return np.argmin(dist, axis=1)
+
 
     def fit(self, X):
         """
@@ -123,12 +116,12 @@ class KMeans(BaseEstimator):
             cluster centers: K x D numpy array, the centers
             loss: final loss value of the objective function of KMeans
         """
-        self.cluster_centers_ = self._init_centers(X, self.n_clusters)
+        self._init_centers(X, self.n_clusters)
         for it in range(self.max_iter):
-            self.labels_ = self._update_assignment(self.cluster_centers_, X)
-            self.cluster_centers_ = self._update_centers(self.cluster_centers_, self.labels_, X)
+            self.labels_ = self.predict(X)
+            self._update_centers(X)
             loss = self._get_loss(self.cluster_centers_, self.labels_, X)
-            K = self.cluster_centers_.shape[0]
+            # K = self.cluster_centers_.shape[0]
             if it:
                 diff = np.abs(prev_loss - loss)
                 if diff < self.abs_tol and diff / prev_loss < self.rel_tol:
