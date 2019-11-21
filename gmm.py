@@ -62,13 +62,23 @@ class GaussianMixture(BaseEstimator):
     def __init__(self, n_components=3,
                         covariance_type='full', 
                         max_iter=100, 
-                        random_state=0):
+                        random_state=0,
+                        verbose=0,
+                        abs_tol=1e-16,
+                        rel_tol=1e-16):
         self.max_iter = max_iter
         self.n_components =n_components
         self.reg_covar = 1e-6
+        self.verbose = verbose
+        self.abs_tol = abs_tol
+        self.rel_tol = rel_tol 
+        self.costs = []
 
     def _ll_joint(self, X):
-        
+        """
+        Return:
+            ll.T: shape(m, n_features)
+        """
         ll = np.empty((self.n_components, X.shape[0]))
         for k in range(self.n_components):
             # mvn = MVN(mean=self.means_[k], cov=self.covariances_[k], eps = eps)
@@ -76,6 +86,7 @@ class GaussianMixture(BaseEstimator):
             # print(mvn.logpdf(x=X).shape, np.log(self.pi[k]))
             
             ll[k] = mvn.logpdf(x=X) + np.log(self.weights_[k])
+        # print(ll.T.shape)
         return ll.T
 
     # def _E_step(self, points, pi, mu, sigma, **kwargs):
@@ -145,7 +156,7 @@ class GaussianMixture(BaseEstimator):
         self._M_step(X, resp)
         
 
-    def fit(self, X, max_iters=100, abs_tol=1e-16, rel_tol=1e-16, **kwargs):
+    def fit(self, X):
         """
         Args:
             points: NxD numpy array, where N is # points and D is the dimensionality
@@ -172,20 +183,22 @@ class GaussianMixture(BaseEstimator):
             
             # calculate the negative log-likelihood of observation
             joint_ll = self._ll_joint(X)
-            loss = -np.sum(logsumexp(joint_ll))
+            # loss = -np.sum(logsumexp(joint_ll, axis=1, keepdims=True))
+            loss = np.mean(logsumexp(joint_ll, axis=1, keepdims=True))
+            self.costs.append(loss)
             if it:
                 diff = np.abs(prev_loss - loss)
-                print('diff', diff)
-                if diff < abs_tol and diff / prev_loss < rel_tol:
+                if self.verbose: print('diff', diff)
+                if diff < self.abs_tol and diff / prev_loss < self.rel_tol:
                     break
             prev_loss = loss
-            print('iter %d, loss: %.4f' % (it, loss))
-        # return gamma, (pi, mu, sigma)
+            if self.verbose: print('iter %d, loss: %.4f' % (it, loss))
+        self.costs = np.array(self.costs)
         return self
 
     def predict(self, X):
-        ll = self._ll_joint(X)
-        return np.argmax(ll, axis=1)
+        joint_ll = self._ll_joint(X)
+        return np.argmax(joint_ll, axis=1)
 
 
 
