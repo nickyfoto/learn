@@ -63,7 +63,8 @@ def test_basic_gmm():
     
     
     print(sk_gmm)
-    
+    # print(sk_gmm.predict_proba(X_test))
+    # print(gmm.predict_proba(X_test))
     
     sk_train_acc = accuracy_score(y_true=y_train, y_pred=sk_gmm.predict(X_train))
     sk_test_acc = accuracy_score(y_true=y_test, y_pred=sk_gmm.predict(X_test))

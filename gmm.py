@@ -102,10 +102,12 @@ class GaussianMixture(BaseEstimator):
             
         Hint: You should be able to do this with just a few lines of code by using _ll_joint() and softmax() defined above. 
         """
-        # raise NotImplementedError
-        ll = self._ll_joint(X)
-        resp = softmax(ll, axis=1)
-        return resp
+        
+        jll = self._ll_joint(X)
+        resp = softmax(jll, axis=1)
+
+
+        return jll, resp
                 
     def _update_covariances(self, resp, X, total_weights_):
         """
@@ -176,15 +178,13 @@ class GaussianMixture(BaseEstimator):
         # pbar = tqdm(range(max_iters))
         for it in range(self.max_iter):
             # E-step
-            resp = self._E_step(X)
+            jll, resp = self._E_step(X)
             
             # M-step
             self._M_step(X, resp)
             
             # calculate the negative log-likelihood of observation
-            joint_ll = self._ll_joint(X)
-            # loss = -np.sum(logsumexp(joint_ll, axis=1, keepdims=True))
-            loss = np.mean(logsumexp(joint_ll, axis=1, keepdims=True))
+            loss = np.mean(logsumexp(jll, axis=1, keepdims=True))
             self.costs.append(loss)
             if it:
                 diff = np.abs(prev_loss - loss)
@@ -196,9 +196,15 @@ class GaussianMixture(BaseEstimator):
         self.costs = np.array(self.costs)
         return self
 
+
+    def predict_proba(self, X):
+        return self._E_step(X)[1]
+
+
+
     def predict(self, X):
-        joint_ll = self._ll_joint(X)
-        return np.argmax(joint_ll, axis=1)
+        
+        return np.argmax(self.predict_proba(X), axis=1)
 
 
 
