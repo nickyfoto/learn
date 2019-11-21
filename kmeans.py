@@ -88,7 +88,7 @@ class KMeans(BaseEstimator):
             loss: a single float number, which is the objective function of KMeans. 
         """
         
-        return np.sum( np.sum(np.square(X[self.labels_ == c] - self.cluster_centers_[c])) 
+        return sum( np.sum(np.square(X[self.labels_ == c] - self.cluster_centers_[c])) 
             for c in range(self.n_clusters) )
 
 
