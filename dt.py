@@ -24,19 +24,6 @@ def _information_gain(current_y, y_entropy):
     c1 = entropy(current_y[1]) * current_y[1].shape[0] / current_y_length
     return y_entropy - c0 - c1
 
-# def partition_classes(X, y, split_attribute, split_val):
-
-#     indices = range(len(y))
-#     if type(split_val) == str:
-#         left_indices = [i for i in indices if X[i][split_attribute] == split_val]
-#     else:
-#         left_indices = [i for i in indices if X[i][split_attribute] <= split_val]
-#     X_left = [X[i] for i in left_indices]
-#     y_left = [y[i] for i in left_indices]
-#     X_right = [X[i] for i in indices if i not in left_indices]
-#     y_right = [y[i] for i in indices if i not in left_indices]
-#     return X_left, X_right, y_left, y_right
-
 def _partition_classes(X, y, split_attribute, split_val):
 
     left_indices = X[:,split_attribute] <= split_val
@@ -66,10 +53,23 @@ def _find_best_feature(X, y):
     split_vals = []
     split_attributes = range(X[0].shape[0])
     y_entropy = entropy(y)
-    for split_attribute in split_attributes:
-        split_val, info_gain = _find_best_split(X, y, split_attribute, y_entropy=y_entropy)
-        info_gains.append(info_gain)
-        split_vals.append(split_val)
+
+
+    tf = np.all(X == X[0,:], axis = 0)
+
+    for split_attribute, all_equal_column in zip(split_attributes, tf):
+        # if (X[:,split_attribute][0] == X[:,split_attribute]).all():
+        #if (X[:,split_attribute][0] == X[:,split_attribute]).all():
+            # print(X.dtype)
+        if all_equal_column:
+            info_gains.append(0.0)
+            split_vals.append(X[:,split_attribute][0])
+            print('skipping all all_equal_column')
+        else:
+            split_val, info_gain = _find_best_split(X, y, split_attribute, y_entropy=y_entropy)
+            info_gains.append(info_gain)
+            split_vals.append(split_val)
+    # print(info_gains)
     max_idx = np.argmax(info_gains)
     return split_attributes[max_idx], split_vals[max_idx]
 
@@ -79,12 +79,13 @@ class DecisionTree(BaseEstimator):
     def __init__(self, 
                     verbose = False,
                     criterion = 'pearsonr',
-                    leaf_size = 1
+                    leaf_size = 1,
+                    max_depth = None,
                     ):   
         self.leaf_size = 1
         self.tree = None
         self.criterion = criterion
-
+        self.max_depth = max_depth
 
     def _get_criterion_score(self, dataX, dataY, split_func):
         n_features= dataX.shape[1]
@@ -105,7 +106,7 @@ class DecisionTree(BaseEstimator):
         """
         return len(np.unique(left_index)) > 1
         
-    def _build_tree(self, dataX, dataY):
+    def _build_tree(self, dataX, dataY, depth):
         """Builds the Decision Tree recursively by choosing the best feature to split on and 
         the splitting value. The best feature has the highest absolute correlation with dataY. 
         If all features have the same absolute correlation, choose the first feature. The 
@@ -121,11 +122,14 @@ class DecisionTree(BaseEstimator):
         (int type; index for a leaf is -1), splitting values, and starting rows, from the current 
         root, for its left and right subtrees (if any)
         """
-        print(np.array(dataX).shape, np.array(dataY).shape)
-        # Leaf value is the most common dataY
-        leaf_node = np.array([[-1, Counter(dataY).most_common(1)[0][0], np.nan, np.nan]])
-        
+        print(np.array(dataX).shape, np.array(dataY).shape, 'depth=', depth)
+        if self.max_depth and depth >= self.max_depth:
+            leaf_node = np.array([[-1, Counter(dataY).most_common(1)[0][0], np.nan, np.nan]])
+            return leaf_node
+
         if self._cannot_split(dataY):
+            # Leaf value is the most common dataY
+            leaf_node = np.array([[-1, Counter(dataY).most_common(1)[0][0], np.nan, np.nan]])
             return leaf_node
 
         if self.criterion == 'pearsonr':
@@ -138,10 +142,11 @@ class DecisionTree(BaseEstimator):
                 if self.splited(left_index):
                     break
             if not feature_corrs:
+                leaf_node = np.array([[-1, Counter(dataY).most_common(1)[0][0], np.nan, np.nan]])
                 return leaf_node
             
-            left_tree = self._build_tree(dataX[left_index], dataY[left_index])
-            right_tree = self._build_tree(dataX[right_index], dataY[right_index])    
+            left_tree = self._build_tree(dataX[left_index], dataY[left_index], depth)
+            right_tree = self._build_tree(dataX[right_index], dataY[right_index], depth)    
             root = np.array([[feature_to_split, split_val, 1, left_tree.shape[0] + 1]])
             res = np.vstack((root, left_tree, right_tree))
             return res
@@ -149,8 +154,9 @@ class DecisionTree(BaseEstimator):
             feature_to_split, split_val = _find_best_feature(dataX, dataY)
             X_left, X_right, y_left, y_right = _partition_classes(dataX, dataY, 
                                                 feature_to_split, split_val)
-            left_tree = self._build_tree(X_left, y_left)
-            right_tree = self._build_tree(X_right, y_right)    
+            depth += 1
+            left_tree = self._build_tree(X_left, y_left, depth)
+            right_tree = self._build_tree(X_right, y_right, depth)    
             root = np.array([[feature_to_split, split_val, 1, left_tree.shape[0] + 1]])
             res = np.vstack((root, left_tree, right_tree))
             return res
@@ -177,7 +183,7 @@ class DecisionTree(BaseEstimator):
 
     def fit(self, dataX, dataY):
         # print(dataY.shape)
-        new_tree = self._build_tree(dataX, dataY)
+        new_tree = self._build_tree(dataX, dataY, depth=0)
         if not self.tree:
             self.tree = new_tree
         else:

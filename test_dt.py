@@ -10,12 +10,33 @@ import numpy as np
 import pandas as pd
 
 from dt import DecisionTree
+from dt import _find_best_feature
+
 from sklearn.metrics import accuracy_score
 from sklearn import tree
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import LabelEncoder
 
-# @pytest.mark.smoke
+
+
+@pytest.mark.smoke
+def test_find_best_feature():
+    test_X = [  
+                [3, 1, 10],
+                [1, 1, 22],
+                [2, 1, 28],
+                [5, 1, 32],
+                [4, 1, 32]
+             ]
+    test_y = [1,1,0,0,1]
+
+
+    best_feature, best_split_val = _find_best_feature(np.array(test_X), np.array(test_y))
+    print("best_split_feature:", best_feature, "best_split_val:", best_split_val)
+
+
+
+@pytest.mark.smoke
 def test_basic_dt():
     X = np.array([[0, 0], 
                   [1, 1]])
@@ -35,7 +56,7 @@ def test_basic_dt():
     print(clf.tree)
 
 
-# @pytest.mark.smoke
+@pytest.mark.smoke
 def test_iris_dt():
     from sklearn.datasets import load_iris
     iris = load_iris()
@@ -72,7 +93,7 @@ def test_iris_dt():
 
 
 
-
+# @pytest.mark.smoke
 def test_hw4_dt():
     data_test = pd.read_csv("datasets/hw4_data_test.csv")
     data_valid = pd.read_csv("datasets/hw4_data_valid.csv")
@@ -114,7 +135,7 @@ def test_hw4_dt():
     sk_test_acc = accuracy_score(y_true=y_test, y_pred=sk_clf.predict(X_test))
     print(sk_acc, sk_test_acc)
 
-    clf = DecisionTree(criterion='entropy')
+    clf = DecisionTree(criterion='entropy', max_depth=8)
     # clf = DecisionTree()
     clf.fit(X_train, y_train)
     
