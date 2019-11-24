@@ -1,4 +1,17 @@
-# learn
+# Learn
+
+This is a repo can help you to truly understand and implement all the nuts and bolts of fundamental machine learning algorithms. There are many libraries offer robust APIs to for you to experiment with different algorithm. We believe it is a lot of fun to demystify these encapsulations.
+
+## Steps in step by step tutorial
+
+To make the content easy to follow, every tutorial follow a coherent structure to present. 
+
+- **Intro**: we begin with a toy-toy example to show you what you can do with this algorithm.
+- **Inference**: The toy-toy example helps us to know what are parameters we need and how the model use these parameters to make predictions.
+- **Training**: After presenting the inference part, we are motivated to know how the algorithm learns these parameters during the training.
+- **Code**: Here we develop the necessary steps for the algorithm to be able to learn parameters with the data you fit in.
+- **Theory**: You will find that most part of the code of is not as complex as you think but it's necessary for you to understand why you write the code as it is by consulting the theoretical support for this algorithm.
+- **Application**: Finally we show some real world examples for you to have a grasp of the scenarios where the algorithm is applicable.
 
 ## Supervised Learning
 
