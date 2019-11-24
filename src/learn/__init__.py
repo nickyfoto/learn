@@ -1,6 +1,6 @@
 """Learn Fundamental Machine Learning Algorithms."""
 
-from .api import (
+from .lr import (
     LogisticRegression
 )
 
