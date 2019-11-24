@@ -5,11 +5,14 @@ pytest -vv --html=report.html --capture=sys
 
 """
 
+import pickle
+from pprint import pprint
+
 import pytest
 import numpy as np
 import pandas as pd
 
-from dt import DecisionTree
+from dt import DecisionTree, DecisionTreeD
 from dt import _find_best_feature
 
 from sklearn.metrics import accuracy_score
@@ -53,7 +56,13 @@ def test_basic_dt():
     clf.fit(X, Y)
     print(clf)
     print(clf.predict(X))
-    print(clf.tree)
+    # print(clf.tree)
+
+
+    clf_d = DecisionTreeD()
+    clf_d.fit(X, Y)
+    print(clf_d)
+    print(clf_d.predict(X))
 
 
 @pytest.mark.smoke
@@ -90,10 +99,18 @@ def test_iris_dt():
     print('my_test_acc', my_test_acc)
     assert sk_acc == my_acc
 
+    # print(clf.tree)
+    clf_d = DecisionTreeD()
+    clf_d.fit(X_train, y_train)
+    print(clf_d)
+    # pprint(clf_d.tree)
+    my_acc_d = accuracy_score(y_true=y_train, y_pred=clf_d.predict(X_train))
+    my_test_acc_d = accuracy_score(y_true=y_test, y_pred=clf_d.predict(X_test))
+    assert sk_acc == my_acc_d
+    print('my_test_acc_d', my_test_acc_d)
 
 
-
-# @pytest.mark.smoke
+@pytest.mark.smoke
 def test_hw4_dt():
     data_test = pd.read_csv("datasets/hw4_data_test.csv")
     data_valid = pd.read_csv("datasets/hw4_data_valid.csv")
@@ -135,7 +152,7 @@ def test_hw4_dt():
     sk_test_acc = accuracy_score(y_true=y_test, y_pred=sk_clf.predict(X_test))
     print(sk_acc, sk_test_acc)
 
-    clf = DecisionTree(criterion='entropy', max_depth=8)
+    clf = DecisionTree(criterion='entropy', max_depth=None)
     # clf = DecisionTree()
     clf.fit(X_train, y_train)
     
@@ -146,9 +163,55 @@ def test_hw4_dt():
     print(my_acc, my_test_acc)
     # assert sk_acc == my_acc
 
-# test_iris_dt()
+    pickle.dump( clf, open( "dt_clf.p", "wb" ) )
+
+# @pytest.mark.smoke
+def test_pruning():
+
+    data_test = pd.read_csv("datasets/hw4_data_test.csv")
+    data_valid = pd.read_csv("datasets/hw4_data_valid.csv")
+    data_train = pd.read_csv("datasets/hw4_data_train.csv")
+
+    categorical = ['workclass', 'education', 'marital-status', 'occupation', 
+                       'relationship', 'race', 'sex', 'native-country']
+    numerical = ['age', 'fnlwgt', 'education-num','capital-gain', 'capital-loss',
+                    'hours-per-week']
+
+    for feature in categorical:
+            le = LabelEncoder()
+            data_train[feature] = le.fit_transform(data_train[feature])
+            data_test[feature] = le.fit_transform(data_test[feature])
+            
+    X_train = pd.concat([data_train[categorical], data_train[numerical]], axis=1)
+    y_train = data_train['high-income']
+    X_test = pd.concat([data_test[categorical], data_test[numerical]], axis=1)
+    y_test = data_test['high-income']
+    X_train, y_train, X_test, y_test = np.array(X_train), np.array(y_train), np.array(X_test), np.array(y_test)
+
+    for feature in categorical:
+            le = LabelEncoder()
+            data_valid[feature] = le.fit_transform(data_valid[feature])  
+            
+    X_valid = pd.concat([data_valid[categorical], data_valid[numerical]], axis=1)
+    y_valid = data_valid['high-income']
+    X_valid, y_valid = np.array(X_valid), np.array(y_valid)
 
 
+    clf = pickle.load( open( "dt_clf.p", "rb" ) )
+    my_acc = accuracy_score(y_true=y_train, y_pred=clf.predict(X_train))
+    my_test_acc = accuracy_score(y_true=y_test, y_pred=clf.predict(X_test))
+    print()
+    print(my_acc, my_test_acc)
 
 
+    clf_d = DecisionTreeD()
+    clf_d.fit(X_train, y_train)
+    my_acc_d = accuracy_score(y_true=y_train, y_pred=clf_d.predict(X_train))
+    my_test_acc_d = accuracy_score(y_true=y_test, y_pred=clf_d.predict(X_test))
+    print()
+    print(my_acc_d, my_test_acc_d)
+    # print(clf.tree)
+    # print(clf.tree.shape)
+    # leaves_indices = clf.tree[:,0] == -1.
+    # print(leaves_indices.shape, leaves_indices.dtype)
 

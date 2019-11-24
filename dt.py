@@ -55,16 +55,13 @@ def _find_best_feature(X, y):
     y_entropy = entropy(y)
 
 
-    tf = np.all(X == X[0,:], axis = 0)
+    column_equality = np.all(X == X[0,:], axis = 0)
 
-    for split_attribute, all_equal_column in zip(split_attributes, tf):
-        # if (X[:,split_attribute][0] == X[:,split_attribute]).all():
-        #if (X[:,split_attribute][0] == X[:,split_attribute]).all():
-            # print(X.dtype)
+    for split_attribute, all_equal_column in zip(split_attributes, column_equality):
         if all_equal_column:
             info_gains.append(0.0)
             split_vals.append(X[:,split_attribute][0])
-            print('skipping all all_equal_column')
+            # print('skipping all all_equal_column')
         else:
             split_val, info_gain = _find_best_split(X, y, split_attribute, y_entropy=y_entropy)
             info_gains.append(info_gain)
@@ -122,7 +119,7 @@ class DecisionTree(BaseEstimator):
         (int type; index for a leaf is -1), splitting values, and starting rows, from the current 
         root, for its left and right subtrees (if any)
         """
-        print(np.array(dataX).shape, np.array(dataY).shape, 'depth=', depth)
+        # print(np.array(dataX).shape, np.array(dataY).shape, 'depth=', depth)
         if self.max_depth and depth >= self.max_depth:
             leaf_node = np.array([[-1, Counter(dataY).most_common(1)[0][0], np.nan, np.nan]])
             return leaf_node
@@ -158,7 +155,9 @@ class DecisionTree(BaseEstimator):
             left_tree = self._build_tree(X_left, y_left, depth)
             right_tree = self._build_tree(X_right, y_right, depth)    
             root = np.array([[feature_to_split, split_val, 1, left_tree.shape[0] + 1]])
-            res = np.vstack((root, left_tree, right_tree))
+            res = np.vstack((root, left_tree, right_tree))#.astype(root.dtype)
+            # print(res.dtype)
+            # print(root.dtype, left_tree.dtype, right_tree.dtype, res.dtype)
             return res
 
 
@@ -199,4 +198,53 @@ class DecisionTree(BaseEstimator):
         preds: A numpy 1D array of the estimated values
         """                                                         
         preds = [self._search_point(point, row=0) for point in points]
+        return preds
+
+
+
+class DecisionTreeD(BaseEstimator):
+    def __init__(self):
+        self.max_depth = None
+        self.leaf_size = 1
+
+    def _cannot_split(self, y):
+        n_examples = np.array(y).shape[0]
+        return (n_examples <= self.leaf_size or len(np.unique(y)) == 1)
+
+
+    def _build_tree(self, X, y, parent, depth=0):
+        # print(np.array(X).shape, np.array(y).shape)
+        if self.max_depth and depth >= self.max_depth:
+            todo
+
+        if self._cannot_split(y):
+            return {'is_leaf': True, 'val': Counter(y).most_common(1)[0][0], 'parent': parent}
+
+        feature_to_split, split_val = _find_best_feature(X, y)
+        X_left, X_right, y_left, y_right = _partition_classes(X, y, 
+                                                feature_to_split, split_val)
+        parent['feature_to_split'] = feature_to_split
+        parent['split_val'] = split_val
+        parent['left'] = self._build_tree(X_left, y_left, parent={'is_leaf': False})
+        parent['right'] = self._build_tree(X_right, y_right, parent={'is_leaf': False})
+        return parent
+
+    def fit(self, X, y):
+        self.tree = {}
+        self.tree['root'] = self._build_tree(X, y, parent={'is_leaf': False})
+        return self
+
+    def _search_point(self, point, tree):
+        if tree['is_leaf']:
+            # print(tree['val'])
+            # aa
+            return tree['val']
+        else:
+            if point[tree['feature_to_split']] <= tree['split_val']:
+                return self._search_point(point, tree['left'])
+            else:
+                return self._search_point(point, tree['right'])
+
+    def predict(self, X):                                                        
+        preds = [self._search_point(point, self.tree['root']) for point in X]
         return preds
