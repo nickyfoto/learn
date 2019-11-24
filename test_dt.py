@@ -152,20 +152,27 @@ def test_hw4_dt():
     sk_test_acc = accuracy_score(y_true=y_test, y_pred=sk_clf.predict(X_test))
     print(sk_acc, sk_test_acc)
 
-    clf = DecisionTree(criterion='entropy', max_depth=None)
-    # clf = DecisionTree()
-    clf.fit(X_train, y_train)
+    # clf = DecisionTree(criterion='entropy', max_depth=None)
+    # # clf = DecisionTree()
+    # clf.fit(X_train, y_train)
     
-    print(clf)
+    # print(clf)
 
-    my_acc = accuracy_score(y_true=y_train, y_pred=clf.predict(X_train))
-    my_test_acc = accuracy_score(y_true=y_test, y_pred=clf.predict(X_test))
-    print(my_acc, my_test_acc)
+    # my_acc = accuracy_score(y_true=y_train, y_pred=clf.predict(X_train))
+    # my_test_acc = accuracy_score(y_true=y_test, y_pred=clf.predict(X_test))
+    # print(my_acc, my_test_acc)
     # assert sk_acc == my_acc
 
-    pickle.dump( clf, open( "dt_clf.p", "wb" ) )
+    clf_d = DecisionTreeD()
+    clf_d.fit(X_train, y_train)
+    my_acc_d = accuracy_score(y_true=y_train, y_pred=clf_d.predict(X_train))
+    my_test_acc_d = accuracy_score(y_true=y_test, y_pred=clf_d.predict(X_test))
+    print()
+    print(my_acc_d, my_test_acc_d)
 
-# @pytest.mark.smoke
+    pickle.dump( clf_d, open( "dt_clf.p", "wb" ) )
+
+
 def test_pruning():
 
     data_test = pd.read_csv("datasets/hw4_data_test.csv")
@@ -204,14 +211,16 @@ def test_pruning():
     print(my_acc, my_test_acc)
 
 
-    clf_d = DecisionTreeD()
-    clf_d.fit(X_train, y_train)
-    my_acc_d = accuracy_score(y_true=y_train, y_pred=clf_d.predict(X_train))
-    my_test_acc_d = accuracy_score(y_true=y_test, y_pred=clf_d.predict(X_test))
-    print()
-    print(my_acc_d, my_test_acc_d)
-    # print(clf.tree)
-    # print(clf.tree.shape)
-    # leaves_indices = clf.tree[:,0] == -1.
-    # print(leaves_indices.shape, leaves_indices.dtype)
+
+
+    # clf_d8 = DecisionTreeD(max_depth=8)
+    # clf_d8.fit(X_train, y_train)
+    # my_acc_d8 = accuracy_score(y_true=y_train, y_pred=clf_d8.predict(X_train))
+    # my_test_acc_d8 = accuracy_score(y_true=y_test, y_pred=clf_d8.predict(X_test))
+    # print()
+    # print(my_acc_d8, my_test_acc_d8)
+
+    def pruning(dt, X, y):
+        print(dt.leaves)
+    dt_pruned = pruning(clf, X_test, y_test)
 

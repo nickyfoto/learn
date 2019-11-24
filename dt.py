@@ -203,41 +203,52 @@ class DecisionTree(BaseEstimator):
 
 
 class DecisionTreeD(BaseEstimator):
-    def __init__(self):
-        self.max_depth = None
-        self.leaf_size = 1
+    def __init__(self,
+                    leaf_size = 1,
+                    max_depth = None):
+        self.max_depth = max_depth
+        self.leaf_size = leaf_size
+        self.leaves = []
 
     def _cannot_split(self, y):
         n_examples = np.array(y).shape[0]
         return (n_examples <= self.leaf_size or len(np.unique(y)) == 1)
 
+    def get_leaf_node(self, y, parent):
+        c = Counter(y)
+        if c[0] >= c[1]:
+            leaf_node = {'is_leaf': True, 'val': 0, 'parent': parent}
+        else:
+            leaf_node = {'is_leaf': True, 'val': 1, 'parent': parent}
+        self.leaves.append(leaf_node)
+        return leaf_node
+
 
     def _build_tree(self, X, y, parent, depth=0):
-        # print(np.array(X).shape, np.array(y).shape)
+        print(np.array(X).shape, np.array(y).shape, 'depth=', depth)
         if self.max_depth and depth >= self.max_depth:
-            todo
-
+            return self.get_leaf_node(y, parent)            
+            
         if self._cannot_split(y):
-            return {'is_leaf': True, 'val': Counter(y).most_common(1)[0][0], 'parent': parent}
+            return self.get_leaf_node(y, parent)
 
         feature_to_split, split_val = _find_best_feature(X, y)
         X_left, X_right, y_left, y_right = _partition_classes(X, y, 
                                                 feature_to_split, split_val)
         parent['feature_to_split'] = feature_to_split
         parent['split_val'] = split_val
-        parent['left'] = self._build_tree(X_left, y_left, parent={'is_leaf': False})
-        parent['right'] = self._build_tree(X_right, y_right, parent={'is_leaf': False})
+        depth += 1
+        parent['left'] = self._build_tree(X_left, y_left, parent={'is_leaf': False}, depth=depth)
+        parent['right'] = self._build_tree(X_right, y_right, parent={'is_leaf': False}, depth=depth)
         return parent
 
     def fit(self, X, y):
         self.tree = {}
-        self.tree['root'] = self._build_tree(X, y, parent={'is_leaf': False})
+        self.tree['root'] = self._build_tree(X, y, parent={'is_leaf': False}, depth=0)
         return self
 
     def _search_point(self, point, tree):
         if tree['is_leaf']:
-            # print(tree['val'])
-            # aa
             return tree['val']
         else:
             if point[tree['feature_to_split']] <= tree['split_val']:
