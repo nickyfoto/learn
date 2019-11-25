@@ -13,6 +13,8 @@ To make the content easy to follow, every tutorial follow a coherent structure t
 - **Theory**: You will find that most part of the code of is not as complex as you think but it's necessary for you to understand why you write the code as it is by consulting the theoretical support for this algorithm.
 - **Application**: Finally we show some real world examples for you to have a grasp of the scenarios where the algorithm is applicable.
 
+## Installation
+
 ## Supervised Learning
 
 ### Linear Regression
