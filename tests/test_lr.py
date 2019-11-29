@@ -9,7 +9,7 @@ pytest -svv test_lr.py --disable-warnings
 
 pytest -svv -m 'sgd' test_lr.py --disable-warnings
 pytest -svv -m 'l2' test_lr.py --disable-warnings
-pytest -svv -m 'loss' test_lr.py --disable-warnings
+pytest -svv -m 'loss' test_lr.py
 """
 
 
@@ -23,7 +23,7 @@ from sklearn.model_selection import train_test_split
 from sklearn.model_selection import GridSearchCV
 from sklearn.metrics import classification_report,confusion_matrix, accuracy_score
 
-from lr import LogisticRegression
+from learn import LogisticRegression
 from evaluation import within
 
 from pprint import pprint
