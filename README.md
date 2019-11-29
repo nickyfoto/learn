@@ -1,6 +1,6 @@
-# Learn
+# ml-learn
 
-This is a repo can help you to truly understand and implement all the nuts and bolts of fundamental machine learning algorithms. There are many libraries offer robust APIs to for you to experiment with different algorithm. We believe it is a lot of fun to demystify these encapsulations.
+This is a repo can help you to truly understand all the nuts and bolts of fundamental machine learning algorithms by implementing them step by step. There are many ml libraries offer robust APIs for user to experiment with different algorithm. We believe it is much more fun dive into the core and demystify these encapsulations.
 
 ## Steps in step by step tutorial
 
@@ -15,33 +15,46 @@ To make the content easy to follow, every tutorial follow a coherent structure t
 
 ## Installation
 
+```
+git clone https://github.com/nickyfoto/ml-learn.git
+pip3 install ./ml-learn
+```
+
+Install in editable mode
+
+```
+pip3 install -e ./ml-learn
+```
+
 ## Supervised Learning
 
 ### Linear Regression
 
-- [theory](https://nickyfoto.github.io/blog/entries/linear-regression) | [implementation](https://github.com/nickyfoto/learn/blob/master/linear_regression.ipynb) | [examples](https://github.com/nickyfoto/learn/blob/master/linear_regression_example.ipynb) | [code](https://github.com/nickyfoto/learn/blob/master/lm.py)
+- [theory](https://nickyfoto.github.io/blog/entries/linear-regression) | [implementation](https://github.com/nickyfoto/ml-learn/blob/master/linear_regression.ipynb) | [examples](https://github.com/nickyfoto/ml-learn/blob/master/linear_regression_example.ipynb) | [code](https://github.com/nickyfoto/ml-learn/blob/master/lm.py)
 
 ### Logistic Regression
 
-- [theory](https://nickyfoto.github.io/blog/entries/logistic-regression) | [implementation](https://github.com/nickyfoto/learn/blob/master/logistic_regression.ipynb) | examples | [code](https://github.com/nickyfoto/learn/blob/master/lr.py)
+- [theory](https://nickyfoto.github.io/blog/entries/logistic-regression) | [implementation](https://github.com/nickyfoto/ml-learn/blob/master/logistic_regression.ipynb) | examples | [code](https://github.com/nickyfoto/ml-learn/blob/master/lr.py)
 
 ### Naive Bayes
 
-- [theory](https://nickyfoto.github.io/blog/entries/naive-bayes) | [implementation](https://github.com/nickyfoto/learn/blob/master/naive_bayes.ipynb) | [examples](https://github.com/nickyfoto/learn/blob/master/naive_bayes_examples.ipynb) | [code](naive_bayes.py)
+- [theory](https://nickyfoto.github.io/blog/entries/naive-bayes) | [implementation](https://github.com/nickyfoto/ml-learn/blob/master/naive_bayes.ipynb) | [examples](https://github.com/nickyfoto/ml-learn/blob/master/naive_bayes_examples.ipynb) | [code](https://github.com/nickyfoto/ml-learn/blob/master/src/learn/naive_bayes.py)
+
+### Decisison Tree
 
 ## Unsupervised Learning
 
 ### KMeans
 
-- [theory](http://cs229.stanford.edu/notes/cs229-notes7a.pdf) from cs229 | [implementation](https://github.com/nickyfoto/learn/blob/master/kmeans.ipynb) | [examples](https://github.com/nickyfoto/learn/blob/master/kmeans_example.ipynb) | [code](https://github.com/nickyfoto/learn/blob/master/kmeans.py)
+- [theory](http://cs229.stanford.edu/notes/cs229-notes7a.pdf) from cs229 | [implementation](https://github.com/nickyfoto/ml-learn/blob/master/kmeans.ipynb) | [examples](https://github.com/nickyfoto/ml-learn/blob/master/kmeans_example.ipynb) | [code](https://github.com/nickyfoto/ml-learn/blob/master/kmeans.py)
 
 ### Gaussian Mixture Model
 
-- theory | [implementation](https://github.com/nickyfoto/learn/blob/master/gmm.ipynb) | [examples](https://github.com/nickyfoto/learn/blob/master/gmm_example.ipynb) | [code](https://github.com/nickyfoto/learn/blob/master/gmm.py)
+- theory | [implementation](https://github.com/nickyfoto/ml-learn/blob/master/gmm.ipynb) | [examples](https://github.com/nickyfoto/ml-learn/blob/master/gmm_example.ipynb) | [code](https://github.com/nickyfoto/ml-learn/blob/master/gmm.py)
 
 ### Principal Component Analysis (PCA)
 
-- [theory](https://nickyfoto.github.io/blog/entries/svd) | [examples](https://github.com/nickyfoto/learn/blob/master/pca_example.ipynb) | [code](https://github.com/nickyfoto/learn/blob/master/pca_example.ipynb)
+- [theory](https://nickyfoto.github.io/blog/entries/svd) | [examples](https://github.com/nickyfoto/ml-learn/blob/master/pca_example.ipynb) | [code](https://github.com/nickyfoto/ml-learn/blob/master/pca_example.ipynb)
 
 ## Todo
 
