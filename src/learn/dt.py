@@ -205,14 +205,21 @@ class DecisionTree(BaseEstimator):
 class DecisionTreeD(BaseEstimator):
     def __init__(self,
                     leaf_size = 1,
-                    max_depth = None):
+                    max_depth = None,
+                    verbose=False):
         self.max_depth = max_depth
         self.leaf_size = leaf_size
         self.leaves = []
-
+        self.verbose = verbose
     def _cannot_split(self, y):
         n_examples = np.array(y).shape[0]
         return (n_examples <= self.leaf_size or len(np.unique(y)) == 1)
+
+    def _get_val(self, c0, c1, node):
+        if c0 >= c1:
+            node['val'] = 0
+        else:
+            node['val'] = 1
 
     def get_leaf_node(self, y, parent):
         c = Counter(y)
@@ -221,11 +228,12 @@ class DecisionTreeD(BaseEstimator):
         else:
             leaf_node = {'is_leaf': True, 'val': 1, 'parent': parent}
         self.leaves.append(leaf_node)
-        return leaf_node
+        return c[0], c[1], leaf_node
 
 
     def _build_tree(self, X, y, parent, depth=0):
-        print(np.array(X).shape, np.array(y).shape, 'depth=', depth)
+        if self.verbose:
+            print(np.array(X).shape, np.array(y).shape, 'depth=', depth)
         if self.max_depth and depth >= self.max_depth:
             return self.get_leaf_node(y, parent)            
             
@@ -235,16 +243,30 @@ class DecisionTreeD(BaseEstimator):
         feature_to_split, split_val = _find_best_feature(X, y)
         X_left, X_right, y_left, y_right = _partition_classes(X, y, 
                                                 feature_to_split, split_val)
-        parent['feature_to_split'] = feature_to_split
-        parent['split_val'] = split_val
+        node = {'is_leaf': False}
+        node['feature_to_split'] = feature_to_split
+        node['split_val'] = split_val
         depth += 1
-        parent['left'] = self._build_tree(X_left, y_left, parent={'is_leaf': False}, depth=depth)
-        parent['right'] = self._build_tree(X_right, y_right, parent={'is_leaf': False}, depth=depth)
-        return parent
+        # node['depth'] = depth
+        if parent:
+            node['parent'] = parent
+        l0, l1, node['left'] = self._build_tree(X_left, y_left, 
+                                                    parent=node,
+                                                    depth=depth)
+        r0, r1, node['right'] = self._build_tree(X_right, y_right, 
+                                                    parent=node,
+                                                    depth=depth)
+        self._get_val(l0+r0, l1+r1, node)
+        return l0+r0, l1+r1, node
 
     def fit(self, X, y):
         self.tree = {}
-        self.tree['root'] = self._build_tree(X, y, parent={'is_leaf': False}, depth=0)
+        c0, c1, self.tree['root'] = self._build_tree(
+                                                    X,
+                                                    y, 
+                                                    parent=None,
+                                                    depth=0)
+        self._get_val(c0, c1, self.tree['root'])
         return self
 
     def _search_point(self, point, tree):
@@ -256,6 +278,14 @@ class DecisionTreeD(BaseEstimator):
             else:
                 return self._search_point(point, tree['right'])
 
-    def predict(self, X):                                                        
+    def bunch_predict(self, X):                                                        
         preds = [self._search_point(point, self.tree['root']) for point in X]
         return preds
+
+    def predict(self, record):
+        """
+        TODO: classify a sample in test data set using self.tree and return the predicted label
+        """
+        #  Delete this line when you implement the function
+        # raise NotImplementedError
+        return self._search_point(record, self.tree['root'])

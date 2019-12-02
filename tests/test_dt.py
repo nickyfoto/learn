@@ -7,13 +7,14 @@ pytest -vv --html=report.html --capture=sys
 
 import pickle
 from pprint import pprint
+from copy import deepcopy
 
 import pytest
 import numpy as np
 import pandas as pd
 
-from dt import DecisionTree, DecisionTreeD
-from dt import _find_best_feature
+from learn.dt import DecisionTree, DecisionTreeD
+# from learn.dt import _find_best_feature
 
 from sklearn.metrics import accuracy_score
 from sklearn import tree
@@ -112,9 +113,9 @@ def test_iris_dt():
 
 @pytest.mark.smoke
 def test_hw4_dt():
-    data_test = pd.read_csv("datasets/hw4_data_test.csv")
-    data_valid = pd.read_csv("datasets/hw4_data_valid.csv")
-    data_train = pd.read_csv("datasets/hw4_data_train.csv")
+    data_test = pd.read_csv("../datasets/hw4_data_test.csv")
+    data_valid = pd.read_csv("../datasets/hw4_data_valid.csv")
+    data_train = pd.read_csv("../datasets/hw4_data_train.csv")
 
     categorical = ['workclass', 'education', 'marital-status', 'occupation', 
                        'relationship', 'race', 'sex', 'native-country']
@@ -152,32 +153,31 @@ def test_hw4_dt():
     sk_test_acc = accuracy_score(y_true=y_test, y_pred=sk_clf.predict(X_test))
     print(sk_acc, sk_test_acc)
 
-    # clf = DecisionTree(criterion='entropy', max_depth=None)
-    # # clf = DecisionTree()
-    # clf.fit(X_train, y_train)
+    clf8 = DecisionTreeD(max_depth=8)
+    clf8.fit(X_train, y_train)
     
-    # print(clf)
+    print(clf8)
 
-    # my_acc = accuracy_score(y_true=y_train, y_pred=clf.predict(X_train))
-    # my_test_acc = accuracy_score(y_true=y_test, y_pred=clf.predict(X_test))
-    # print(my_acc, my_test_acc)
+    my_acc = accuracy_score(y_true=y_train, y_pred=clf8.bunch_predict(X_train))
+    my_test_acc = accuracy_score(y_true=y_test, y_pred=clf8.bunch_predict(X_test))
+    print('acc when depth=8', my_acc, my_test_acc)
     # assert sk_acc == my_acc
 
     clf_d = DecisionTreeD()
     clf_d.fit(X_train, y_train)
-    my_acc_d = accuracy_score(y_true=y_train, y_pred=clf_d.predict(X_train))
-    my_test_acc_d = accuracy_score(y_true=y_test, y_pred=clf_d.predict(X_test))
+    my_acc_d = accuracy_score(y_true=y_train, y_pred=clf_d.bunch_predict(X_train))
+    my_test_acc_d = accuracy_score(y_true=y_test, y_pred=clf_d.bunch_predict(X_test))
     print()
     print(my_acc_d, my_test_acc_d)
 
-    pickle.dump( clf_d, open( "dt_clf.p", "wb" ) )
+    # pickle.dump( clf_d, open( "../models/dt_clf.p", "wb" ) )
 
-
+@pytest.mark.smoke
 def test_pruning():
 
-    data_test = pd.read_csv("datasets/hw4_data_test.csv")
-    data_valid = pd.read_csv("datasets/hw4_data_valid.csv")
-    data_train = pd.read_csv("datasets/hw4_data_train.csv")
+    data_test = pd.read_csv("../datasets/hw4_data_test.csv")
+    data_valid = pd.read_csv("../datasets/hw4_data_valid.csv")
+    data_train = pd.read_csv("../datasets/hw4_data_train.csv")
 
     categorical = ['workclass', 'education', 'marital-status', 'occupation', 
                        'relationship', 'race', 'sex', 'native-country']
@@ -204,23 +204,145 @@ def test_pruning():
     X_valid, y_valid = np.array(X_valid), np.array(y_valid)
 
 
-    clf = pickle.load( open( "dt_clf.p", "rb" ) )
-    my_acc = accuracy_score(y_true=y_train, y_pred=clf.predict(X_train))
-    my_test_acc = accuracy_score(y_true=y_test, y_pred=clf.predict(X_test))
+    clf = pickle.load( open( "../models/dt_clf.p", "rb" ) )
+    my_acc = accuracy_score(y_true=y_train, y_pred=clf.bunch_predict(X_train))
+    my_test_acc = accuracy_score(y_true=y_test, y_pred=clf.bunch_predict(X_test))
     print()
     print(my_acc, my_test_acc)
 
+    def DecisionTreeEvalution(dt,X,y, verbose=True):
+        #print(X.shape, y.shape)
+        # Make predictions
+        # For each test sample X, use our fitting dt classifer to predict
+        y_predicted = []
+        for record in X: 
+            y_predicted.append(dt.predict(record))
 
+        # Comparing predicted and true labels
+        results = [prediction == truth for prediction, truth in zip(y_predicted, y)]
 
-
-    # clf_d8 = DecisionTreeD(max_depth=8)
-    # clf_d8.fit(X_train, y_train)
-    # my_acc_d8 = accuracy_score(y_true=y_train, y_pred=clf_d8.predict(X_train))
-    # my_test_acc_d8 = accuracy_score(y_true=y_test, y_pred=clf_d8.predict(X_test))
-    # print()
-    # print(my_acc_d8, my_test_acc_d8)
+        # Accuracy
+        accuracy = float(results.count(True)) / float(len(results))
+        if verbose:
+            print("accuracy: %.4f" % accuracy)
+        return accuracy
 
     def pruning(dt, X, y):
-        print(dt.leaves)
-    dt_pruned = pruning(clf, X_test, y_test)
+        # print(dt.leaves)
+        pt = deepcopy(dt)
+        # list we iterate to check whether to change a tree node into a leaf 
+        # node
+        trees = []
+        for leaf in pt.leaves:
+            trees.append(leaf['parent'])
+        while trees:
+            tree = trees.pop(0)
+            if not tree['is_leaf']:
+                curr_error_rate = DecisionTreeEvalution(pt,X,y, verbose=False)
+                tree['is_leaf'] = True
+                updated_error_rate = DecisionTreeEvalution(pt,X,y, 
+                                                            verbose=False)
+                print(curr_error_rate, updated_error_rate, len(trees))
+                if updated_error_rate < curr_error_rate:
+                    tree['is_leaf'] = False
+                if tree.get('parent'):
+                    if not tree['parent']['is_leaf']:
+                        trees.append(tree['parent'])
+        return pt
 
+            
+    dt_pruned = pruning(clf, X_test, y_test)
+    print(DecisionTreeEvalution(dt_pruned, X_valid, y_valid, False))
+
+
+
+
+# @pytest.mark.smoke
+def test_pruning():
+
+    data_test = pd.read_csv("../datasets/hw4_data_test.csv")
+    data_valid = pd.read_csv("../datasets/hw4_data_valid.csv")
+    data_train = pd.read_csv("../datasets/hw4_data_train.csv")
+
+    categorical = ['workclass', 'education', 'marital-status', 'occupation', 
+                       'relationship', 'race', 'sex', 'native-country']
+    numerical = ['age', 'fnlwgt', 'education-num','capital-gain', 'capital-loss',
+                    'hours-per-week']
+
+    for feature in categorical:
+            le = LabelEncoder()
+            data_train[feature] = le.fit_transform(data_train[feature])
+            data_test[feature] = le.fit_transform(data_test[feature])
+            
+    X_train = pd.concat([data_train[categorical], data_train[numerical]], axis=1)
+    y_train = data_train['high-income']
+    X_test = pd.concat([data_test[categorical], data_test[numerical]], axis=1)
+    y_test = data_test['high-income']
+    X_train, y_train, X_test, y_test = np.array(X_train), np.array(y_train), np.array(X_test), np.array(y_test)
+
+    for feature in categorical:
+            le = LabelEncoder()
+            data_valid[feature] = le.fit_transform(data_valid[feature])  
+            
+    X_valid = pd.concat([data_valid[categorical], data_valid[numerical]], axis=1)
+    y_valid = data_valid['high-income']
+    X_valid, y_valid = np.array(X_valid), np.array(y_valid)
+
+
+    clf = pickle.load( open( "../models/dt_clf.p", "rb" ) )
+    my_acc = accuracy_score(y_true=y_train, y_pred=clf.bunch_predict(X_train))
+    my_test_acc = accuracy_score(y_true=y_test, y_pred=clf.bunch_predict(X_test))
+    print()
+    print(my_acc, my_test_acc)
+
+    def DecisionTreeEvalution(dt,X,y, verbose=True):
+        #print(X.shape, y.shape)
+        # Make predictions
+        # For each test sample X, use our fitting dt classifer to predict
+        y_predicted = []
+        for record in X: 
+            y_predicted.append(dt.predict(record))
+
+        # Comparing predicted and true labels
+        results = [prediction == truth for prediction, truth in zip(y_predicted, y)]
+
+        # Accuracy
+        accuracy = float(results.count(True)) / float(len(results))
+        if verbose:
+            print("accuracy: %.4f" % accuracy)
+        return accuracy
+
+
+    def _partition_classes(X, y, split_attribute, split_val):
+
+        left_indices = X[:,split_attribute] <= split_val
+        X_left = X[left_indices]
+        y_left = y[left_indices]
+        X_right = X[~left_indices]
+        y_right = y[~left_indices]
+        return X_left, X_right, y_left, y_right
+
+    def DecisionTreeError(y):
+        num_ones = np.sum(y)
+        num_zeros = len(y) - num_ones
+        return 1.0 - max(num_ones, num_zeros) / float(len(y))
+
+    def pruning(dt, X, y):
+        if dt['is_leaf']:
+            return dt
+        
+        dt['data'] = {'X': X, 'y': y}
+        X_left, X_right, y_left, y_right = _partition_classes(
+            X, y, dt['feature_to_split'], dt['split_val'])
+        dt['left'] = pruning(dt['left'], X_left, y_left)
+        dt['right'] = pruning(dt['right'], X_right, y_right)
+        error = 1 - DecisionTreeEvalution(dt, X, y, verbose=False)
+        leaf_error = DecisionTreeError(y)
+        if error >= leaf_error:
+            dt['is_leaf'] = True
+        return dt
+        
+
+    
+    dt_pruned = pruning(clf.tree['root'], X_test, y_test)
+    print(DecisionTreeEvalution(dt_pruned, X_valid, y_valid, False))
