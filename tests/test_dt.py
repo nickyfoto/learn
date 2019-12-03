@@ -146,22 +146,20 @@ def test_hw4_dt():
     sk_clf = tree.DecisionTreeClassifier(criterion='entropy', random_state=0)
     sk_clf.fit(X_train, y_train)
     print()
-    # print(clf.predict([[2., 2.]]))
     print(sk_clf)
 
     sk_acc = accuracy_score(y_true=y_train, y_pred=sk_clf.predict(X_train))
     sk_test_acc = accuracy_score(y_true=y_test, y_pred=sk_clf.predict(X_test))
     print(sk_acc, sk_test_acc)
 
-    clf8 = DecisionTreeD(max_depth=8)
-    clf8.fit(X_train, y_train)
+    # clf8 = DecisionTreeD(max_depth=8)
+    # clf8.fit(X_train, y_train)
     
-    print(clf8)
+    # print(clf8)
 
-    my_acc = accuracy_score(y_true=y_train, y_pred=clf8.bunch_predict(X_train))
-    my_test_acc = accuracy_score(y_true=y_test, y_pred=clf8.bunch_predict(X_test))
-    print('acc when depth=8', my_acc, my_test_acc)
-    # assert sk_acc == my_acc
+    # my_acc = accuracy_score(y_true=y_train, y_pred=clf8.bunch_predict(X_train))
+    # my_test_acc = accuracy_score(y_true=y_test, y_pred=clf8.bunch_predict(X_test))
+    # print('acc when depth=8', my_acc, my_test_acc)
 
     clf_d = DecisionTreeD()
     clf_d.fit(X_train, y_train)
@@ -170,7 +168,7 @@ def test_hw4_dt():
     print()
     print(my_acc_d, my_test_acc_d)
 
-    # pickle.dump( clf_d, open( "../models/dt_clf.p", "wb" ) )
+    pickle.dump( clf_d, open( "../models/dt_clf.p", "wb" ) )
 
 @pytest.mark.smoke
 def test_pruning():
@@ -305,7 +303,7 @@ def test_pruning():
 
         # Comparing predicted and true labels
         results = [prediction == truth for prediction, truth in zip(y_predicted, y)]
-
+        # print(y, results)
         # Accuracy
         accuracy = float(results.count(True)) / float(len(results))
         if verbose:
@@ -328,21 +326,21 @@ def test_pruning():
         return 1.0 - max(num_ones, num_zeros) / float(len(y))
 
     def pruning(dt, X, y):
-        if dt['is_leaf']:
+        if dt.is_leaf or X.shape[0] == 0:
             return dt
-        
-        dt['data'] = {'X': X, 'y': y}
+
         X_left, X_right, y_left, y_right = _partition_classes(
-            X, y, dt['feature_to_split'], dt['split_val'])
-        dt['left'] = pruning(dt['left'], X_left, y_left)
-        dt['right'] = pruning(dt['right'], X_right, y_right)
+            X, y, dt.feature_to_split, dt.split_val)
+
+        dt.left = pruning(dt.left, X_left, y_left)
+        dt.right = pruning(dt.right, X_right, y_right)
         error = 1 - DecisionTreeEvalution(dt, X, y, verbose=False)
         leaf_error = DecisionTreeError(y)
         if error >= leaf_error:
-            dt['is_leaf'] = True
+            dt.is_leaf = True
         return dt
         
 
     
-    dt_pruned = pruning(clf.tree['root'], X_test, y_test)
+    dt_pruned = pruning(clf, X_test, y_test)
     print(DecisionTreeEvalution(dt_pruned, X_valid, y_valid, False))
