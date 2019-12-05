@@ -1,6 +1,7 @@
 import numpy as np
 from sklearn.base import BaseEstimator
 from sklearn.preprocessing import LabelBinarizer
+from scipy.special import logsumexp
 
 class NaiveBayes(BaseEstimator):
     """
@@ -61,9 +62,22 @@ class NaiveBayes(BaseEstimator):
         """Calculate the posterior log probability of the samples X"""
         return np.dot(X, self.feature_log_prob_.T) + self.class_log_prior_
 
+    def predict_log_proba(self, X):
+        jll = self._joint_log_likelihood(X)
+        log_prob_x = logsumexp(jll, axis=1)
+        return jll - np.atleast_2d(log_prob_x).T
+
+    def predict_proba(self, X):
+        return np.exp(self.predict_log_proba(X))
+
     def predict(self, X):
         jll = self._joint_log_likelihood(X)
         return self.classes_[np.argmax(jll, axis=1)]
+
+
+
+
+
 
 if __name__ == '__main__':
     from evaluation import test
