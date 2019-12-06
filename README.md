@@ -42,6 +42,10 @@ pip3 install -e ./ml-learn
 
 ### Decisison Tree
 
+### Perceptron
+
+### SVM
+
 ## Unsupervised Learning
 
 ### KMeans
@@ -58,6 +62,7 @@ pip3 install -e ./ml-learn
 
 ## Todo
 
+- [ ] adopt [scikit-learn-contrib template](https://github.com/scikit-learn-contrib/project-template)
 - [ ] explain `softmax` and `logsumexp` in GMM.
 - [ ] how to implement multinomial in logistic regression
 - [ ] [Linear Discriminant Analysis (LDA)](https://web.stanford.edu/~hastie/Papers/ESLII.pdf)
