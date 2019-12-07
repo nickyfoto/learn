@@ -40,7 +40,7 @@ pip3 install -e ./ml-learn
 
 - #### Perceptron
 
-	- [example]()
+	- [example](https://github.com/nickyfoto/ml-learn/blob/master/tutorials/perceptron.ipynb)
 
 - #### SVM
 
