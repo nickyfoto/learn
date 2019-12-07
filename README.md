@@ -36,7 +36,7 @@ pip3 install -e ./ml-learn
 
 - #### Logistic Regression
 
-	- [theory](https://nickyfoto.github.io/blog/entries/logistic-regression) | [implementation](https://github.com/nickyfoto/ml-learn/blob/master/logistic_regression.ipynb) | examples | [code](https://github.com/nickyfoto/ml-learn/blob/master/lr.py)
+	- [theory](https://nickyfoto.github.io/blog/entries/logistic-regression) | [implementation](https://github.com/nickyfoto/ml-learn/blob/master/tutorials/logistic_regression.ipynb) | examples | [code](https://github.com/nickyfoto/ml-learn/blob/master/lr.py)
 
 - #### Perceptron
 
