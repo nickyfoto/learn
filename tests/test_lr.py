@@ -282,9 +282,10 @@ def test_perceptron(cancer):
     X, y = cancer
     clf = LogisticRegression(sgd=True, 
                                 loss="perceptron", 
-                                # loss="log", 
+                                random_state = 0,
                                 max_iter=1000, learning_rate=0.2)
     clf.fit(X, y)
-    print()
-    #print(np.unique(y))
-    print(clf.score(X, y))
+    # print()
+    s = clf.score(X, y)
+    print(s)
+    assert s > 0.9

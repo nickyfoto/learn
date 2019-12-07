@@ -28,7 +28,8 @@ class LogisticRegression(BaseEstimator):
                     print_cost = False,
                     sgd = False,
                     penalty = None,
-                    c_lambda = 0,):
+                    c_lambda = 0,
+                    random_state = None):
         self.fit_intercept = fit_intercept
         self.max_iter = int(max_iter)
         self.learning_rate = learning_rate
@@ -37,6 +38,7 @@ class LogisticRegression(BaseEstimator):
         self.c_lambda = c_lambda
         self.penalty = penalty
         self.loss = loss
+        self.random_state = random_state
         self.update_loss_func()
 
     def update_loss_func(self):
@@ -57,9 +59,7 @@ class LogisticRegression(BaseEstimator):
 
     def perceptron_decision_fuc(self, X):
         pred = np.dot(X, self.coef_.T) + self.intercept_
-        if pred >= 0:
-            return 1
-        return 0
+        return np.where(pred >= 0, 1, 0)
 
     def log_decision_func(self, X):
         pred = sigmoid(np.dot(X, self.coef_.T) + self.intercept_)
@@ -70,6 +70,11 @@ class LogisticRegression(BaseEstimator):
         y = self.le.fit_transform(y)
         self.classes_ = self.le.classes_
         y.shape = (self.m, 1)
+
+        if self.random_state is not None:
+            np.random.seed(self.random_state)
+
+
         for step in range(self.max_iter):
             indices = np.arange(self.m)
             np.random.shuffle(indices)
@@ -79,7 +84,6 @@ class LogisticRegression(BaseEstimator):
                 for idx, x in enumerate(X):
                     pred = self.loss_function_(x)
                     error = pred - y[idx]
-                    # print(pred)
                     gradient = x * error
                     if self.penalty == 'l2':
                         self.coef_ -= self.learning_rate * (gradient.T + self.c_lambda * self.coef_ / self.m)
@@ -190,11 +194,7 @@ class LogisticRegression(BaseEstimator):
             else:
                 indices = scores.argmax(axis=1)
         else:
-            scores = np.dot(X, self.coef_.T) + self.intercept_
-            #print(scores)
-            indices = np.where(scores >= 0, 1 , 0)
-            # print((indices == 0).all())
-        
+            indices = self.loss_function_(X)
         return self.classes_[indices]
 
 
