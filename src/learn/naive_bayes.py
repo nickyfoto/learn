@@ -74,10 +74,10 @@ class NaiveBayes(BaseEstimator):
         jll = self._joint_log_likelihood(X)
         return self.classes_[np.argmax(jll, axis=1)]
 
+from scipy.stats import multivariate_normal as mvn
 
-
-
-
+class GaussianNB(BaseEstimator):
+    
 
 if __name__ == '__main__':
     from evaluation import test

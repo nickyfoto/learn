@@ -22,6 +22,7 @@ class LogisticRegression(BaseEstimator):
     """
     def __init__(self, 
                     fit_intercept = True,
+                    loss = 'log',
                     max_iter = 2000,
                     learning_rate = 0.5,
                     print_cost = False,
@@ -35,7 +36,14 @@ class LogisticRegression(BaseEstimator):
         self.sgd = sgd
         self.c_lambda = c_lambda
         self.penalty = penalty
-        
+        self.loss = loss
+        self.update_loss_func()
+
+    def update_loss_func(self):
+        if self.loss == 'perceptron':
+            self.loss_function_ = self.perceptron_decision_fuc
+        elif self.loss == 'log':
+            self.loss_function_ = self.log_decision_func
 
     def log_likelihood(self, preds, target, i=None):
         ll = - (np.dot(target.T,  np.log(preds + np.finfo(float).eps)) + 
@@ -47,6 +55,15 @@ class LogisticRegression(BaseEstimator):
                 ll += self.c_lambda * np.square(self.coef_[i]).sum() / (2 * self.m)
         return ll
 
+    def perceptron_decision_fuc(self, X):
+        pred = np.dot(X, self.coef_.T) + self.intercept_
+        if pred >= 0:
+            return 1
+        return 0
+
+    def log_decision_func(self, X):
+        pred = sigmoid(np.dot(X, self.coef_.T) + self.intercept_)
+        return pred
 
     def fit_binary(self, X, y):
         self.le = LabelEncoder()
@@ -54,10 +71,15 @@ class LogisticRegression(BaseEstimator):
         self.classes_ = self.le.classes_
         y.shape = (self.m, 1)
         for step in range(self.max_iter):
+            indices = np.arange(self.m)
+            np.random.shuffle(indices)
+            X = X[indices]
+            y = y[indices]
             if self.sgd:
                 for idx, x in enumerate(X):
-                    pred = sigmoid(np.dot(x, self.coef_.T) + self.intercept_)
+                    pred = self.loss_function_(x)
                     error = pred - y[idx]
+                    # print(pred)
                     gradient = x * error
                     if self.penalty == 'l2':
                         self.coef_ -= self.learning_rate * (gradient.T + self.c_lambda * self.coef_ / self.m)
@@ -69,7 +91,7 @@ class LogisticRegression(BaseEstimator):
                 cost = self.log_likelihood(preds = preds, target = y)
 
             else:
-                preds = sigmoid(np.dot(X, self.coef_.T) + self.intercept_)
+                preds = self.loss_function_(X)
                 error = preds - y
                 gradient = np.dot(X.T, error)
                 if self.penalty == 'l2':
@@ -116,7 +138,6 @@ class LogisticRegression(BaseEstimator):
 
                 cost = self.log_likelihood(preds = preds, target = y_i, i=i)
                 self.costs[i][step] = cost
-        # self.costs.append(cost_i)
 
         return self
 
@@ -160,13 +181,20 @@ class LogisticRegression(BaseEstimator):
         scores /= scores.sum(axis=1).reshape((scores.shape[0], -1))
         # print(scores.sum(axis=1))
         return scores
+    
     def predict(self, X):
-        scores = self.decision_function(X)
-
-        if len(scores.shape) == 1:
-            indices = scores.round().astype(np.int)
+        if self.loss == 'log':
+            scores = self.decision_function(X)
+            if len(scores.shape) == 1:
+                indices = scores.round().astype(np.int)
+            else:
+                indices = scores.argmax(axis=1)
         else:
-            indices = scores.argmax(axis=1)
+            scores = np.dot(X, self.coef_.T) + self.intercept_
+            #print(scores)
+            indices = np.where(scores >= 0, 1 , 0)
+            # print((indices == 0).all())
+        
         return self.classes_[indices]
 
 

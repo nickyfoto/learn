@@ -8,8 +8,9 @@ pytest -svv test_lr.py --disable-warnings
 
 
 pytest -svv -m 'sgd' test_lr.py --disable-warnings
-pytest -svv -m 'l2' test_lr.py --disable-warnings
+pytest -svv -m 'l2' test_lr.py
 pytest -svv -m 'loss' test_lr.py
+pytest -svv -m 'pla' test_lr.py --disable-warnings
 """
 
 
@@ -28,32 +29,41 @@ from evaluation import within
 
 from pprint import pprint
 
+@pytest.fixture()
+def iris():
+    return datasets.load_iris(return_X_y=True)
 
-
+@pytest.fixture()
+def cancer():
+    return datasets.load_breast_cancer(return_X_y=True)
 
 @pytest.mark.loss
-def test_loss_func():
-    
-    X, y = datasets.load_iris(return_X_y=True)
+def test_loss_func(iris):
+    """
+    test the shape of the costs property of clf
+    """
+    X, y = iris
     X = X[:100]
     y = y[:100]
     max_iter = 100
-    clf = LogisticRegression(print_cost = False, max_iter=max_iter, learning_rate=1e-1, sgd=True)
+    clf = LogisticRegression(print_cost = False, max_iter=max_iter, 
+                             learning_rate=1e-1, sgd=True)
     clf.fit(X, y)
     # print(clf.costs)
     assert clf.costs.shape == (max_iter,)
 
-    X, y = datasets.load_iris(return_X_y=True)
+    X, y = iris
     clf.fit(X, y)
-    print(clf.costs)
+    #print(clf.costs)
     print(clf.costs.T.shape, clf.costs.T.mean(axis=1).shape)
     assert clf.costs.shape == (3,max_iter)
 
-
-
-# @pytest.mark.l2
-def test_l2_regularization():
-    X, y = datasets.load_iris(return_X_y=True)
+@pytest.mark.l2
+def test_l2_regularization(iris):
+    """
+    This test is slow
+    """
+    X, y = iris
 
     # print(clf.Cs_)
     sksgd = linear_model.SGDClassifier(loss='log', penalty='none', tol=None,
@@ -89,19 +99,6 @@ def test_l2_regularization():
     print('best param', clf.best_params_)
     print('best cv score', clf.best_score_)
 
-
-
-
-
-
-
-
-
-
-
-
-
-
 @pytest.mark.sgd
 def test_basic_sgd():
     X = np.array([[-1, -1], [-2, -1], [1, 1], [2, 1]])
@@ -114,8 +111,6 @@ def test_basic_sgd():
     # print(preds)
     # print(clf.predict_proba(X))
     assert np.array_equal(preds, y)
-
-
 
 @pytest.mark.sgd
 def test_basic_multiclass_sgd():
@@ -143,11 +138,9 @@ def test_basic_multiclass_sgd():
     # print(preds)
     assert np.array_equal(preds, y)
 
-
-
 @pytest.mark.sgd
-def test_multiclass_sgd():
-    X, y = datasets.load_iris(return_X_y=True)
+def test_multiclass_sgd(iris):
+    X, y = iris
     X_train, X_test, y_train, y_test = train_test_split(X,
                                                         y, 
                                                         test_size = 0.20, 
@@ -195,11 +188,6 @@ def test_basic_multiclass():
     clf.predict_proba(X)
     assert np.array_equal(preds, y)
 
-
-
-
-
-
 @pytest.mark.smoke
 def test_basic():
     X = np.array([[-1, -1], [-2, -1], [1, 1], [2, 1]])
@@ -213,11 +201,9 @@ def test_basic():
     # print(clf.predict_proba(X))
     assert np.array_equal(preds, y)
 
-
-
 @pytest.mark.smoke
-def test_binary_score():
-    X, y = datasets.load_iris(return_X_y=True)
+def test_binary_score(iris):
+    X, y = iris
     X = X[:100]
     y = y[:100]
 
@@ -251,13 +237,10 @@ def test_binary_score():
 
     assert sk_train == approx(clf_train)
     assert sk_test == approx(clf_test)
-    
-
-
 
 @pytest.mark.smoke
-def test_multi_class_score():
-    X, y = datasets.load_iris(return_X_y=True)
+def test_multi_class_score(iris):
+    X, y = iris
     X_train, X_test, y_train, y_test = train_test_split(X,
                                                         y, 
                                                         test_size = 0.20, 
@@ -294,11 +277,14 @@ def test_multi_class_score():
     assert within(sk_val = sk_train, val=clf_train, tol = 0.1)
     assert within(sk_val = sk_test, val=clf_test, tol = 0.1)
 
-
-
-
-
-
-
-
-
+@pytest.mark.pla
+def test_perceptron(cancer):
+    X, y = cancer
+    clf = LogisticRegression(sgd=True, 
+                                loss="perceptron", 
+                                # loss="log", 
+                                max_iter=1000, learning_rate=0.2)
+    clf.fit(X, y)
+    print()
+    #print(np.unique(y))
+    print(clf.score(X, y))

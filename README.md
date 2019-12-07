@@ -28,23 +28,27 @@ pip3 install -e ./ml-learn
 
 ## Supervised Learning
 
-### Linear Regression
+### Linear Model
 
-- [theory](https://nickyfoto.github.io/blog/entries/linear-regression) | [implementation](https://github.com/nickyfoto/ml-learn/blob/master/linear_regression.ipynb) | [examples](https://github.com/nickyfoto/ml-learn/blob/master/linear_regression_example.ipynb) | [code](https://github.com/nickyfoto/ml-learn/blob/master/lm.py)
+- #### Linear Regression
 
-### Logistic Regression
+	- [theory](https://nickyfoto.github.io/blog/entries/linear-regression) | [implementation](https://github.com/nickyfoto/ml-learn/blob/master/linear_regression.ipynb) | [examples](https://github.com/nickyfoto/ml-learn/blob/master/linear_regression_example.ipynb) | [code](https://github.com/nickyfoto/ml-learn/blob/master/lm.py)
 
-- [theory](https://nickyfoto.github.io/blog/entries/logistic-regression) | [implementation](https://github.com/nickyfoto/ml-learn/blob/master/logistic_regression.ipynb) | examples | [code](https://github.com/nickyfoto/ml-learn/blob/master/lr.py)
+- #### Logistic Regression
+
+	- [theory](https://nickyfoto.github.io/blog/entries/logistic-regression) | [implementation](https://github.com/nickyfoto/ml-learn/blob/master/logistic_regression.ipynb) | examples | [code](https://github.com/nickyfoto/ml-learn/blob/master/lr.py)
+
+- #### Perceptron
+
+	- [example]()
+
+- #### SVM
 
 ### Naive Bayes
 
 - [theory](https://nickyfoto.github.io/blog/entries/naive-bayes) | [implementation](https://github.com/nickyfoto/ml-learn/blob/master/naive_bayes.ipynb) | [examples](https://github.com/nickyfoto/ml-learn/blob/master/naive_bayes_examples.ipynb) | [code](https://github.com/nickyfoto/ml-learn/blob/master/src/learn/naive_bayes.py)
 
 ### Decisison Tree
-
-### Perceptron
-
-### SVM
 
 ## Unsupervised Learning
 
