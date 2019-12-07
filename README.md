@@ -46,7 +46,7 @@ pip3 install -e ./ml-learn
 
 ### Naive Bayes
 
-- [theory](https://nickyfoto.github.io/blog/entries/naive-bayes) | [implementation](https://github.com/nickyfoto/ml-learn/blob/master/naive_bayes.ipynb) | [examples](https://github.com/nickyfoto/ml-learn/blob/master/naive_bayes_examples.ipynb) | [code](https://github.com/nickyfoto/ml-learn/blob/master/src/learn/naive_bayes.py)
+- [theory](https://nickyfoto.github.io/blog/entries/naive-bayes) | [implementation](https://github.com/nickyfoto/ml-learn/blob/master/naive_bayes.ipynb) | [examples](https://github.com/nickyfoto/ml-learn/blob/master/tutorials/naive_bayes_examples.ipynb) | [code](https://github.com/nickyfoto/ml-learn/blob/master/src/learn/naive_bayes.py)
 
 ### Decisison Tree
 
