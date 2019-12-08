@@ -2,6 +2,8 @@
 
 This is a repo can help you to truly understand all the nuts and bolts of fundamental machine learning algorithms by implementing them step by step. There are many ml libraries offer robust APIs for user to experiment with different algorithm. We believe it is much more fun dive into the core and demystify these encapsulations.
 
+[view in nbviewer](https://nbviewer.jupyter.org/github/nickyfoto/ml-learn/)
+
 ## Steps in step by step tutorial
 
 To make the content easy to follow, every tutorial follow a coherent structure to present. 
@@ -43,6 +45,8 @@ pip3 install -e ./ml-learn
 	- [implementation](https://github.com/nickyfoto/ml-learn/blob/master/tutorials/perceptron.ipynb)
 
 - #### SVM
+
+	- [implementation](https://github.com/nickyfoto/ml-learn/blob/master/tutorials/svm.ipynb)
 
 ### Naive Bayes
 
