@@ -21,6 +21,31 @@ class SVC(BaseEstimator):
         pass
 
 
+    def get_K(self, X):
+        """
+        https://cvxopt.org/examples/tutorial/qp.html
+        If X =  array([ [0, 1],
+                        [2, 3],
+                        [4, 5],
+                        [6, 7],
+                        [8, 9]])
+        K = 
+        array([  1,   3,   5,   7,   9,   3,  13,  23,  33,  43,   5,  23,  41,
+                59,  77,   7,  33,  59,  85, 111,   9,  43,  77, 111, 145])
+        reshape as 
+        array([ [  1,   3,   5,   7,   9],
+                [  3,  13,  23,  33,  43],
+                [  5,  23,  41,  59,  77],
+                [  7,  33,  59,  85, 111],
+                [  9,  43,  77, 111, 145]])
+        """
+        K = np.array([np.dot(X[i], X[j])
+                        for j in range(self.m)
+                        for i in range(self.m)]).reshape((self.m, self.m))
+        return K
+
+
+
     def fit(self, X, y):
         """
         convert y into -1, 1, dtype: float
@@ -29,9 +54,7 @@ class SVC(BaseEstimator):
         y = np.where(y == 0, -1, y).astype(np.float64)
 
         self.m, self.n = X.shape
-        K = np.array([np.dot(X[i], X[j])
-                        for j in range(self.m)
-                        for i in range(self.m)]).reshape((self.m, self.m))
+        K = self.get_K(X)
 
 
         P = cvxopt.matrix(np.outer(y, y) * K)
@@ -56,13 +79,13 @@ class SVC(BaseEstimator):
         support_vectors_y = y[has_positive_multiplier]
 
         w = compute_w(multipliers, X, y)
-        self.w_from_sv = compute_w(sv_multipliers, support_vectors, support_vectors_y)
-        self.b = compute_b(w, support_vectors, support_vectors_y) # -9.666668268506335
+        self.coef_ = compute_w(sv_multipliers, support_vectors, support_vectors_y)
+        self.intercept_ = compute_b(w, support_vectors, support_vectors_y) # -9.666668268506335
 
 
 
     def predict(self, X):
-        y = np.dot(X, self.w_from_sv) + self.b
+        y = np.dot(X, self.coef_) + self.intercept_
         return self.classes_.take(np.asarray(np.where(y > 0, 1, 0), dtype=np.intp))
 
 

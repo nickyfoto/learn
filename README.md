@@ -54,7 +54,7 @@ pip3 install -e ./ml-learn
 
 ### KMeans
 
-- [theory](http://cs229.stanford.edu/notes/cs229-notes7a.pdf) from cs229 | [implementation](https://github.com/nickyfoto/ml-learn/blob/master/kmeans.ipynb) | [examples](https://github.com/nickyfoto/ml-learn/blob/master/kmeans_example.ipynb) | [code](https://github.com/nickyfoto/ml-learn/blob/master/kmeans.py)
+- [theory](http://cs229.stanford.edu/notes/cs229-notes7a.pdf) | [implementation](https://github.com/nickyfoto/ml-learn/blob/master/kmeans.ipynb) | [examples](https://github.com/nickyfoto/ml-learn/blob/master/kmeans_example.ipynb) | [code](https://github.com/nickyfoto/ml-learn/blob/master/kmeans.py)
 
 ### Gaussian Mixture Model
 

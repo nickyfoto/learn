@@ -6,4 +6,8 @@ from .lr import (
 from .dt import (
     DecisionTreeD
 )
+
+from .svm import (
+    SVC
+)
 __version__ = '0.1.0'

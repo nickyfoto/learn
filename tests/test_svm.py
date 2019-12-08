@@ -6,8 +6,10 @@ import pytest
 import numpy as np
 
 
-from svm import SVC
+from learn import SVC
 from sklearn import svm
+from sklearn.datasets import make_classification
+
 
 def get_dataset_for(X1, y1, X2, y2):
     X = np.vstack((X1, X2))
@@ -35,8 +37,6 @@ def test_basic_svm():
     X = np.array([[-1, -1], [-2, -1], [1, 1], [2, 1]])
     y = np.array([1, 1, 2, 2])
 
-
-
     # X, y = get_dataset(get_training_examples)
     sk_clf = svm.SVC(gamma='auto', random_state=0, verbose=False)
     sk_clf.fit(X, y) 
@@ -51,3 +51,14 @@ def test_basic_svm():
     # print(np.array_equal(y, clf.predict(X)))
     assert np.array_equal(y, clf.predict(X))
 
+    X, y = make_classification(n_features=2, random_state=1, n_samples=4, n_redundant=0)
+    clf = svm.LinearSVC(random_state=0, tol=1e-5, loss='hinge')
+    clf.fit(X, y)
+
+    myclf = SVC()
+    myclf.fit(X, y)
+    print(myclf.coef_, myclf.intercept_)
+    assert np.array_equal(myclf.predict(X), clf.predict(X))
+
+
+    assert np.array_equal(clf.predict(X),  y)
