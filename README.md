@@ -34,7 +34,7 @@ pip3 install -e ./ml-learn
 
 - #### Linear Regression
 
-	- [theory](https://nickyfoto.github.io/blog/entries/linear-regression) | [implementation](https://github.com/nickyfoto/ml-learn/blob/master/linear_regression.ipynb) | [examples](https://github.com/nickyfoto/ml-learn/blob/master/linear_regression_example.ipynb) | [code](https://github.com/nickyfoto/ml-learn/blob/master/lm.py)
+	- [theory](https://nickyfoto.github.io/blog/entries/linear-regression) | [implementation](https://github.com/nickyfoto/ml-learn/blob/master/tutorials/linear_regression.ipynb) | [examples](https://github.com/nickyfoto/ml-learn/blob/master/tutorials/linear_regression_example.ipynb) | [code](https://github.com/nickyfoto/ml-learn/blob/master/lm.py)
 
 - #### Logistic Regression
 
@@ -50,7 +50,7 @@ pip3 install -e ./ml-learn
 
 ### Naive Bayes
 
-- [theory](https://nickyfoto.github.io/blog/entries/naive-bayes) | [implementation](https://github.com/nickyfoto/ml-learn/blob/master/naive_bayes.ipynb) | [examples](https://github.com/nickyfoto/ml-learn/blob/master/tutorials/naive_bayes_examples.ipynb) | [code](https://github.com/nickyfoto/ml-learn/blob/master/src/learn/naive_bayes.py)
+- [theory](https://nickyfoto.github.io/blog/entries/naive-bayes) | [implementation](https://github.com/nickyfoto/ml-learn/blob/master/tutorials/naive_bayes.ipynb) | [examples](https://github.com/nickyfoto/ml-learn/blob/master/tutorials/naive_bayes_examples.ipynb) | [code](https://github.com/nickyfoto/ml-learn/blob/master/src/learn/naive_bayes.py)
 
 ### Decisison Tree
 
@@ -58,15 +58,15 @@ pip3 install -e ./ml-learn
 
 ### KMeans
 
-- [theory](http://cs229.stanford.edu/notes/cs229-notes7a.pdf) | [implementation](https://github.com/nickyfoto/ml-learn/blob/master/kmeans.ipynb) | [examples](https://github.com/nickyfoto/ml-learn/blob/master/kmeans_example.ipynb) | [code](https://github.com/nickyfoto/ml-learn/blob/master/kmeans.py)
+- [theory](http://cs229.stanford.edu/notes/cs229-notes7a.pdf) | [implementation](https://github.com/nickyfoto/ml-learn/blob/master/tutorials/kmeans.ipynb) | [examples](https://github.com/nickyfoto/ml-learn/blob/master/tutorials/kmeans_example.ipynb) | [code](https://github.com/nickyfoto/ml-learn/blob/master/kmeans.py)
 
 ### Gaussian Mixture Model
 
-- theory | [implementation](https://github.com/nickyfoto/ml-learn/blob/master/gmm.ipynb) | [examples](https://github.com/nickyfoto/ml-learn/blob/master/gmm_example.ipynb) | [code](https://github.com/nickyfoto/ml-learn/blob/master/gmm.py)
+- theory | [implementation](https://github.com/nickyfoto/ml-learn/blob/master/tutorials/gmm.ipynb) | [examples](https://github.com/nickyfoto/ml-learn/blob/master/tutorials/gmm_example.ipynb) | [code](https://github.com/nickyfoto/ml-learn/blob/master/gmm.py)
 
 ### Principal Component Analysis (PCA)
 
-- [theory](https://nickyfoto.github.io/blog/entries/svd) | [examples](https://github.com/nickyfoto/ml-learn/blob/master/pca_example.ipynb) | [code](https://github.com/nickyfoto/ml-learn/blob/master/pca_example.ipynb)
+- [theory](https://nickyfoto.github.io/blog/entries/svd) | [examples](https://github.com/nickyfoto/ml-learn/blob/master/tutorials/pca_example.ipynb) | [code](https://github.com/nickyfoto/ml-learn/blob/master/tutorials/pca_example.ipynb)
 
 ## Todo
 
